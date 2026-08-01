@@ -1,5 +1,5 @@
 // Spelling Drill — offline cache. ارفعه جنب index.html في نفس الفولدر.
-const CACHE = 'spelling-v4';
+const CACHE = 'spelling-v6';
 const CORE = ['./', './index.html'];
 
 self.addEventListener('install', e => {
