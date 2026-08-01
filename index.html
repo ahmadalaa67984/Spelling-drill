@@ -67,7 +67,7 @@
   .track > div{height:100%;background:var(--primary);width:0;transition:width .35s ease}
 
   /* ---------- card ---------- */
-  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px 18px;text-align:center;box-shadow:0 1px 0 rgba(15,20,32,.04)}
+  .card{position:relative;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px 18px;text-align:center;box-shadow:0 1px 0 rgba(15,20,32,.04)}
   .glyph{
     width:126px;height:126px;margin:0 auto 14px;border-radius:50%;
     display:flex;align-items:center;justify-content:center;font-size:60px;line-height:1;
@@ -148,6 +148,38 @@
   .wlist{margin-top:16px;display:flex;flex-wrap:wrap;gap:6px;direction:ltr}
   .wlist span{font-family:var(--mono);font-size:13px;background:var(--bad-soft);color:var(--bad);border:1px solid #F3C6C9;padding:5px 9px;border-radius:8px}
   .foot{margin-top:auto;padding-top:18px;text-align:center;font-size:11.5px;color:var(--muted)}
+  /* ---------- library ---------- */
+  .search{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:var(--card);font-family:inherit;font-size:15px;outline:none;margin-bottom:10px}
+  .search:focus{border-color:var(--primary)}
+  .tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:10px}
+  .tab{flex:0 0 auto;border:1px solid var(--line);background:var(--card);color:var(--muted);border-radius:999px;padding:8px 13px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer}
+  .tab.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .peek{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted);margin-bottom:12px;cursor:pointer;user-select:none}
+  .peek input{width:16px;height:16px;accent-color:var(--primary)}
+  .wrow{background:var(--card);border:1px solid var(--line);border-radius:14px;margin-bottom:8px;overflow:hidden}
+  .whead{display:flex;align-items:center;gap:10px;padding:12px;cursor:pointer}
+  .whead .rg{font-size:24px;flex:0 0 auto;width:32px;text-align:center}
+  .whead .rt{flex:1;min-width:0}
+  .whead .wd{display:block;font-family:var(--mono);font-weight:700;font-size:15px;direction:ltr;text-align:left;transition:filter .15s}
+  .whead .ar{display:block;font-size:12.5px;color:var(--muted);margin-top:2px}
+  .blur .wd{filter:blur(6px)}
+  .blur .wd.shown{filter:none}
+  .tally{display:flex;gap:4px;flex:0 0 auto;font-family:var(--dis);font-size:11.5px;font-weight:700}
+  .tally i{font-style:normal;padding:3px 7px;border-radius:7px;background:#F1F3F8;color:var(--muted)}
+  .tally i.g{background:var(--ok-soft);color:var(--ok)}
+  .tally i.r{background:var(--bad-soft);color:var(--bad)}
+  .bk{flex:0 0 auto;background:none;border:0;font-size:17px;padding:4px;cursor:pointer;opacity:.28;filter:grayscale(1)}
+  .bk.on{opacity:1;filter:none}
+  .wdet{display:none;padding:0 12px 14px;border-top:1px solid var(--line);margin-top:2px}
+  .wrow.open .wdet{display:block}
+  .def{font-family:var(--dis);direction:ltr;text-align:left;font-size:13.5px;line-height:1.6;color:var(--ink);background:var(--primary-soft);border-radius:10px;padding:10px 12px;margin:12px 0 10px}
+  .sent{font-family:var(--dis);direction:ltr;text-align:left;font-size:13px;line-height:1.7;color:#3B455C;margin:0 0 6px;padding-left:12px;border-left:2px solid var(--line)}
+  .sent b{background:var(--amber);border-radius:3px;padding:0 3px}
+  .dact{display:flex;gap:8px;margin-top:12px}
+  .dact button{flex:1;border:1px solid var(--line);background:#fff;border-radius:10px;padding:9px;font-family:inherit;font-size:13px;font-weight:600;color:var(--ink);cursor:pointer}
+  .empty{text-align:center;color:var(--muted);font-size:13.5px;padding:30px 10px;line-height:1.8}
+  .bkcard{position:absolute;left:12px;top:12px;background:none;border:0;font-size:20px;padding:4px;cursor:pointer;opacity:.28;filter:grayscale(1)}
+  .bkcard.on{opacity:1;filter:none}
   @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -180,6 +212,16 @@
       <span class="t"><b>غلطاتي</b><span>الكلمات اللي غلطت فيها هنا</span></span>
       <span class="n" id="n-weak">0</span>
     </button>
+    <button class="deck" data-deck="book">
+      <span class="ic">🔖</span>
+      <span class="t"><b>المحفوظة</b><span>اللي علّمت عليها بالبوكمارك</span></span>
+      <span class="n" id="n-book">0</span>
+    </button>
+    <button class="deck" id="go-lib" style="border-color:var(--primary);border-width:1.5px">
+      <span class="ic" style="background:var(--ink);color:#fff">📚</span>
+      <span class="t"><b>كل الكلمات</b><span>القائمة كاملة بالمعنى والجمل وسجلك في كل كلمة</span></span>
+      <span class="n">›</span>
+    </button>
 
     <p class="note">قفل الـ autocorrect من كيبورد الموبايل لو تقدر — التطبيق بيقفله من ناحيته، بس بعض الكيبوردات بتصر تصحح لوحدها وده هيضيع الهدف من التمرين.</p>
     <div class="foot en">Web Speech API · en-GB</div>
@@ -197,6 +239,7 @@
     <div class="track"><div id="bar"></div></div>
 
     <div class="card">
+      <button class="bkcard" id="btn-book" title="حفظ الكلمة">🔖</button>
       <div class="glyph" id="glyph">🎧</div>
       <p class="meaning" id="meaning">—</p>
       <p class="pos" id="pos"></p>
@@ -219,6 +262,26 @@
 
     <div id="verdict"></div>
     <div class="foot"><span id="btn-skip" style="cursor:pointer">تخطي الكلمة دي ›</span></div>
+  </section>
+
+  <!-- ============ LIBRARY ============ -->
+  <section id="s-lib" class="screen">
+    <header>
+      <button class="mark" id="lib-back" style="background:none;border:0;font-family:inherit;color:var(--muted);cursor:pointer;padding:0">‹ رجوع</button>
+      <div class="stats"><span class="chip" id="lib-count">0</span></div>
+    </header>
+    <input class="search" id="lib-search" type="text" placeholder="دوّر على كلمة (عربي أو إنجليزي)" autocomplete="off">
+    <div class="tabs">
+      <button class="tab on" data-f="all">الكل</button>
+      <button class="tab" data-f="wrong">❌ غلطت فيها</button>
+      <button class="tab" data-f="book">🔖 المحفوظة</button>
+      <button class="tab" data-f="new">✨ لسه ماجربتهاش</button>
+      <button class="tab" data-f="done">✅ مظبوطة</button>
+    </div>
+    <label class="peek"><input type="checkbox" id="lib-blur"> غطّي الإملاء — دوس على الكلمة عشان تكشفها</label>
+    <div id="lib-list"></div>
+    <div class="row" style="margin:14px 0 4px"><button class="act" id="lib-drill">درّب على المعروض</button></div>
+    <div class="foot"></div>
   </section>
 
   <!-- ============ SUMMARY ============ -->
@@ -248,89 +311,89 @@
 ------------------------------------------------------------------ */
 const WORDS = [
  // ---- notebook ----
- {w:"convenient",   g:"🕒", ar:"مريح / مناسب",        p:"adjective", ex:"The hotel is in a convenient location."},
- {w:"suffer",       g:"😣", ar:"يعاني",               p:"verb",      ex:"Many students suffer from exam stress."},
- {w:"mandatory",    g:"⚖️", ar:"إجباري",              p:"adjective", ex:"Attendance at the lecture is mandatory."},
- {w:"optimistic",   g:"🌤️", ar:"متفائل",             p:"adjective", ex:"She feels optimistic about the results."},
- {w:"energetic",    g:"⚡", ar:"نشيط / مفعم بالطاقة",  p:"adjective", ex:"The children were very energetic today."},
- {w:"imaginary",    g:"🦄", ar:"خيالي / وهمي",        p:"adjective", ex:"The story is set in an imaginary city."},
- {w:"permanent",    g:"🧱", ar:"دائم",                p:"adjective", ex:"He was offered a permanent contract."},
- {w:"confident",    g:"💪", ar:"واثق",                p:"adjective", ex:"I feel confident about the speaking test."},
- {w:"flexible",     g:"🤸", ar:"مرن",                 p:"adjective", ex:"The course has flexible study hours."},
- {w:"knowledgeable",g:"🧠", ar:"واسع المعرفة",        p:"adjective", ex:"The guide was very knowledgeable."},
- {w:"comfortable",  g:"🛋️", ar:"مريح",               p:"adjective", ex:"The seats were clean and comfortable."},
- {w:"exciting",     g:"🎢", ar:"مثير / ممتع",         p:"adjective", ex:"The trip sounds really exciting."},
- {w:"accommodation",g:"🏨", ar:"سكن / إقامة",         p:"noun",      ex:"Student accommodation costs 400 a month."},
- {w:"questionnaire",g:"📋", ar:"استبيان",             p:"noun",      ex:"Please complete the questionnaire online."},
- {w:"facilities",   g:"🏗️", ar:"مرافق / تسهيلات",    p:"noun",      ex:"The sports facilities open at seven."},
- {w:"commencement", g:"🎓", ar:"بداية / بدء",         p:"noun",      ex:"The commencement of the course is in May."},
- {w:"intermediate", g:"📶", ar:"متوسط المستوى",       p:"adjective", ex:"He joined the intermediate class."},
- {w:"evaluation",   g:"📊", ar:"تقييم",               p:"noun",      ex:"A written evaluation is due on Friday."},
- {w:"assessment",   g:"📝", ar:"تقييم / تقدير",       p:"noun",      ex:"The final assessment is worth 40%."},
- {w:"discussion",   g:"💬", ar:"مناقشة",              p:"noun",      ex:"We had a long discussion about it."},
- {w:"reference",    g:"🔖", ar:"مرجع",                p:"noun",      ex:"You need a reference from your tutor."},
- {w:"vehicle",      g:"🚗", ar:"مركبة",               p:"noun",      ex:"Leave your vehicle in car park B."},
+ {w:"convenient",   g:"🕒", ar:"مريح / مناسب",        p:"adjective", ex:"The hotel is in a convenient location.", d:"easy to use, or suitable for what you need", x:"Is Monday morning convenient for you?"},
+ {w:"suffer",       g:"😣", ar:"يعاني",               p:"verb",      ex:"Many students suffer from exam stress.", d:"to experience something painful or unpleasant", x:"The city suffered heavy damage in the storm."},
+ {w:"mandatory",    g:"⚖️", ar:"إجباري",              p:"adjective", ex:"Attendance at the lecture is mandatory.", d:"required by a rule or a law", x:"Wearing a helmet is mandatory on the site."},
+ {w:"optimistic",   g:"🌤️", ar:"متفائل",             p:"adjective", ex:"She feels optimistic about the results.", d:"expecting good things to happen", x:"He is optimistic that prices will fall."},
+ {w:"energetic",    g:"⚡", ar:"نشيط / مفعم بالطاقة",  p:"adjective", ex:"The children were very energetic today.", d:"full of energy and very active", x:"An energetic teacher keeps the class awake."},
+ {w:"imaginary",    g:"🦄", ar:"خيالي / وهمي",        p:"adjective", ex:"The story is set in an imaginary city.", d:"existing only in the mind; not real", x:"Children often invent imaginary friends."},
+ {w:"permanent",    g:"🧱", ar:"دائم",                p:"adjective", ex:"He was offered a permanent contract.", d:"lasting for a long time; not temporary", x:"The damage to the wall is permanent."},
+ {w:"confident",    g:"💪", ar:"واثق",                p:"adjective", ex:"I feel confident about the speaking test.", d:"sure that you can do something well", x:"Be confident when you enter the room."},
+ {w:"flexible",     g:"🤸", ar:"مرن",                 p:"adjective", ex:"The course has flexible study hours.", d:"able to change easily to suit new conditions", x:"We need a flexible timetable this term."},
+ {w:"knowledgeable",g:"🧠", ar:"واسع المعرفة",        p:"adjective", ex:"The guide was very knowledgeable.", d:"knowing a lot about a particular subject", x:"Ask Sara, she is knowledgeable about visas."},
+ {w:"comfortable",  g:"🛋️", ar:"مريح",               p:"adjective", ex:"The seats were clean and comfortable.", d:"pleasant to wear, sit in, or live in", x:"Wear comfortable shoes for the tour."},
+ {w:"exciting",     g:"🎢", ar:"مثير / ممتع",         p:"adjective", ex:"The trip sounds really exciting.", d:"making you feel interested and eager", x:"It was an exciting match to watch."},
+ {w:"accommodation",g:"🏨", ar:"سكن / إقامة",         p:"noun",      ex:"Student accommodation costs 400 a month.", d:"a place where you live or stay", x:"The fee does not include accommodation."},
+ {w:"questionnaire",g:"📋", ar:"استبيان",             p:"noun",      ex:"Please complete the questionnaire online.", d:"a set of written questions used to collect information", x:"We sent the questionnaire to 200 people."},
+ {w:"facilities",   g:"🏗️", ar:"مرافق / تسهيلات",    p:"noun",      ex:"The sports facilities open at seven.", d:"buildings or equipment provided for people to use", x:"The hotel has excellent facilities."},
+ {w:"commencement", g:"🎓", ar:"بداية / بدء",         p:"noun",      ex:"The commencement of the course is in May.", d:"the beginning of something (formal)", x:"Fees are paid before the commencement of classes."},
+ {w:"intermediate", g:"📶", ar:"متوسط المستوى",       p:"adjective", ex:"He joined the intermediate class.", d:"at a level between beginner and advanced", x:"You should move up to the intermediate class."},
+ {w:"evaluation",   g:"📊", ar:"تقييم",               p:"noun",      ex:"A written evaluation is due on Friday.", d:"the act of judging how good or useful something is", x:"Please fill in the course evaluation form."},
+ {w:"assessment",   g:"📝", ar:"تقييم / تقدير",       p:"noun",      ex:"The final assessment is worth 40%.", d:"a judgement about someone's work or a situation", x:"Assessment is by essay, not by exam."},
+ {w:"discussion",   g:"💬", ar:"مناقشة",              p:"noun",      ex:"We had a long discussion about it.", d:"a conversation in which people exchange ideas", x:"The discussion lasted almost an hour."},
+ {w:"reference",    g:"🔖", ar:"مرجع",                p:"noun",      ex:"You need a reference from your tutor.", d:"a letter about your character or work; a source you mention", x:"List every reference at the end of the essay."},
+ {w:"vehicle",      g:"🚗", ar:"مركبة",               p:"noun",      ex:"Leave your vehicle in car park B.", d:"a machine such as a car or bus that carries people", x:"No vehicle may enter the park."},
  // ---- traps ----
- {w:"receipt",      g:"🧾", ar:"إيصال",               p:"noun",      ex:"Keep your receipt as proof of payment.", t:1},
- {w:"restaurant",   g:"🍽️", ar:"مطعم",               p:"noun",      ex:"The restaurant is next to the library.", t:1},
- {w:"library",      g:"📚", ar:"مكتبة",               p:"noun",      ex:"The library closes at nine on Fridays.", t:1},
- {w:"jewellery",    g:"💍", ar:"مجوهرات",             p:"noun",      ex:"Do not leave jewellery in your room.", t:1},
- {w:"laboratory",   g:"🔬", ar:"معمل",                p:"noun",      ex:"The laboratory is on the second floor.", t:1},
- {w:"temperature",  g:"🌡️", ar:"درجة الحرارة",       p:"noun",      ex:"The temperature drops at night.", t:1},
- {w:"environment",  g:"🌍", ar:"بيئة",                p:"noun",      ex:"The project protects the environment.", t:1},
- {w:"equipment",    g:"🧰", ar:"معدات",               p:"noun",      ex:"All the equipment is provided free.", t:1},
- {w:"appointment",  g:"📅", ar:"موعد",                p:"noun",      ex:"I booked an appointment for Tuesday.", t:1},
- {w:"cathedral",    g:"⛪", ar:"كاتدرائية",           p:"noun",      ex:"The tour starts at the cathedral.", t:1},
- {w:"museum",       g:"🏛️", ar:"متحف",               p:"noun",      ex:"Entry to the museum is free.", t:1},
- {w:"government",   g:"🏢", ar:"حكومة",               p:"noun",      ex:"The government funds the programme.", t:1},
- {w:"immediately",  g:"⏱️", ar:"فورًا",              p:"adverb",    ex:"Report any damage immediately.", t:1},
- {w:"definitely",   g:"✅", ar:"بالتأكيد",            p:"adverb",    ex:"I will definitely be there.", t:1},
- {w:"separate",     g:"✂️", ar:"منفصل",              p:"adjective", ex:"Use a separate sheet for notes.", t:1},
- {w:"recommend",    g:"👍", ar:"يوصي / ينصح بـ",      p:"verb",      ex:"I recommend the morning session.", t:1},
- {w:"address",      g:"🏠", ar:"عنوان",               p:"noun",      ex:"Write your address in block capitals.", t:1},
- {w:"business",     g:"💼", ar:"عمل / تجارة",         p:"noun",      ex:"She studies business management.", t:1},
- {w:"calendar",     g:"🗓️", ar:"تقويم / نتيجة",      p:"noun",      ex:"The dates are on the calendar.", t:1},
- {w:"colleague",    g:"👔", ar:"زميل عمل",            p:"noun",      ex:"Ask a colleague to check the form.", t:1},
- {w:"committee",    g:"🗳️", ar:"لجنة",               p:"noun",      ex:"The committee meets every month.", t:1},
- {w:"foreign",      g:"🌐", ar:"أجنبي",               p:"adjective", ex:"He speaks three foreign languages.", t:1},
- {w:"maintenance",  g:"🔧", ar:"صيانة",               p:"noun",      ex:"Maintenance work starts on Monday.", t:1},
- {w:"opportunity",  g:"🚪", ar:"فرصة",                p:"noun",      ex:"It is a great opportunity to travel.", t:1},
- {w:"receive",      g:"📥", ar:"يستلم",               p:"verb",      ex:"You will receive an email tomorrow.", t:1},
- {w:"schedule",     g:"📆", ar:"جدول زمني",           p:"noun",      ex:"Check the schedule before you come.", t:1},
- {w:"successful",   g:"🏆", ar:"ناجح",                p:"adjective", ex:"The campaign was very successful.", t:1},
- {w:"beginning",    g:"🚦", ar:"بداية",               p:"noun",      ex:"Pay the fee at the beginning of term.", t:1},
- {w:"achieve",      g:"🎯", ar:"يحقق / ينجز",         p:"verb",      ex:"She wants to achieve band seven.", t:1},
- {w:"brochure",     g:"📔", ar:"كتيب دعائي",          p:"noun",      ex:"The brochure lists all the prices.", t:1},
- {w:"budget",       g:"💰", ar:"ميزانية",             p:"noun",      ex:"The budget covers travel and food.", t:1},
- {w:"campus",       g:"🏫", ar:"حرم جامعي",           p:"noun",      ex:"The main campus is outside the city.", t:1},
- {w:"certificate",  g:"📜", ar:"شهادة",               p:"noun",      ex:"You get a certificate at the end.", t:1},
- {w:"conference",   g:"🎤", ar:"مؤتمر",               p:"noun",      ex:"The conference lasts three days.", t:1},
- {w:"deposit",      g:"💵", ar:"عربون / وديعة",       p:"noun",      ex:"Pay a deposit of fifty pounds.", t:1},
- {w:"efficient",    g:"⚙️", ar:"كفء / فعّال",        p:"adjective", ex:"The new system is more efficient.", t:1},
- {w:"exhibition",   g:"🖼️", ar:"معرض",               p:"noun",      ex:"The exhibition opens next weekend.", t:1},
- {w:"February",     g:"❄️", ar:"فبراير",             p:"noun",      ex:"The course begins in February.", t:1},
- {w:"guarantee",    g:"🛡️", ar:"ضمان",               p:"noun",      ex:"The laptop has a two year guarantee.", t:1},
- {w:"insurance",    g:"📑", ar:"تأمين",               p:"noun",      ex:"Travel insurance is strongly advised.", t:1},
- {w:"itinerary",    g:"🗺️", ar:"خط سير الرحلة",      p:"noun",      ex:"The itinerary includes two museums.", t:1},
- {w:"luggage",      g:"🧳", ar:"حقائب السفر",         p:"noun",      ex:"Leave your luggage at reception.", t:1},
- {w:"membership",   g:"🎫", ar:"عضوية",               p:"noun",      ex:"Membership costs twenty pounds a year.", t:1},
- {w:"passenger",    g:"🚌", ar:"راكب",                p:"noun",      ex:"Each passenger needs a valid ticket.", t:1},
- {w:"pharmacy",     g:"💊", ar:"صيدلية",              p:"noun",      ex:"The pharmacy is opposite the bank.", t:1},
- {w:"psychology",   g:"🧩", ar:"علم النفس",           p:"noun",      ex:"He is studying psychology at Leeds.", t:1},
- {w:"receptionist", g:"🛎️", ar:"موظف استقبال",       p:"noun",      ex:"Give your name to the receptionist.", t:1},
- {w:"souvenir",     g:"🎁", ar:"تذكار",               p:"noun",      ex:"The shop sells souvenirs and maps.", t:1},
- {w:"stadium",      g:"🏟️", ar:"استاد",              p:"noun",      ex:"The stadium holds sixty thousand people.", t:1},
- {w:"statistics",   g:"📈", ar:"إحصاءات",             p:"noun",      ex:"The statistics show a clear rise.", t:1},
- {w:"supermarket",  g:"🛒", ar:"سوبر ماركت",          p:"noun",      ex:"There is a supermarket on campus.", t:1},
- {w:"surgery",      g:"🏥", ar:"عيادة / جراحة",       p:"noun",      ex:"The doctor's surgery opens at eight.", t:1},
- {w:"timetable",    g:"⏰", ar:"جدول مواعيد",         p:"noun",      ex:"The bus timetable changes in June.", t:1},
- {w:"vegetarian",   g:"🥗", ar:"نباتي",               p:"adjective", ex:"A vegetarian option is available.", t:1},
- {w:"warehouse",    g:"📦", ar:"مخزن",                p:"noun",      ex:"The goods are kept in a warehouse.", t:1},
- {w:"Wednesday",    g:"📅", ar:"الأربعاء",            p:"noun",      ex:"The class is on Wednesday evening.", t:1},
- {w:"aluminium",    g:"🥫", ar:"ألومنيوم",            p:"noun",      ex:"The frame is made of aluminium.", t:1},
- {w:"physiotherapy",g:"🦵", ar:"علاج طبيعي",          p:"noun",      ex:"She needs physiotherapy twice a week.", t:1},
- {w:"laundry",      g:"🧺", ar:"غسيل / مغسلة",        p:"noun",      ex:"The laundry room is in the basement.", t:1},
- {w:"neighbourhood",g:"🏘️", ar:"حي / منطقة سكنية",   p:"noun",      ex:"It is a quiet neighbourhood.", t:1}
+ {w:"receipt",      g:"🧾", ar:"إيصال",               p:"noun",      ex:"Keep your receipt as proof of payment.", t:1, d:"a piece of paper showing that you have paid", x:"The shop will not refund you without a receipt."},
+ {w:"restaurant",   g:"🍽️", ar:"مطعم",               p:"noun",      ex:"The restaurant is next to the library.", t:1, d:"a place where you buy and eat a meal", x:"We booked a table at an Italian restaurant."},
+ {w:"library",      g:"📚", ar:"مكتبة",               p:"noun",      ex:"The library closes at nine on Fridays.", t:1, d:"a place where books are kept and borrowed", x:"Return the books to the library by Friday."},
+ {w:"jewellery",    g:"💍", ar:"مجوهرات",             p:"noun",      ex:"Do not leave jewellery in your room.", t:1, d:"objects such as rings and necklaces that you wear", x:"She keeps her jewellery in a small box."},
+ {w:"laboratory",   g:"🔬", ar:"معمل",                p:"noun",      ex:"The laboratory is on the second floor.", t:1, d:"a room used for scientific work", x:"Never eat inside the laboratory."},
+ {w:"temperature",  g:"🌡️", ar:"درجة الحرارة",       p:"noun",      ex:"The temperature drops at night.", t:1, d:"how hot or cold something is", x:"Record the temperature every hour."},
+ {w:"environment",  g:"🌍", ar:"بيئة",                p:"noun",      ex:"The project protects the environment.", t:1, d:"the natural world around us", x:"Plastic waste harms the environment."},
+ {w:"equipment",    g:"🧰", ar:"معدات",               p:"noun",      ex:"All the equipment is provided free.", t:1, d:"the tools or machines needed for an activity", x:"Bring your own camping equipment."},
+ {w:"appointment",  g:"📅", ar:"موعد",                p:"noun",      ex:"I booked an appointment for Tuesday.", t:1, d:"an arrangement to meet someone at a set time", x:"I missed my dentist appointment."},
+ {w:"cathedral",    g:"⛪", ar:"كاتدرائية",           p:"noun",      ex:"The tour starts at the cathedral.", t:1, d:"a very large and important church", x:"The cathedral was built in 1220."},
+ {w:"museum",       g:"🏛️", ar:"متحف",               p:"noun",      ex:"Entry to the museum is free.", t:1, d:"a building where interesting objects are displayed", x:"The museum has a new Egyptian gallery."},
+ {w:"government",   g:"🏢", ar:"حكومة",               p:"noun",      ex:"The government funds the programme.", t:1, d:"the group of people who control a country", x:"The government raised the tax on fuel."},
+ {w:"immediately",  g:"⏱️", ar:"فورًا",              p:"adverb",    ex:"Report any damage immediately.", t:1, d:"at once, without any delay", x:"Call the office immediately if you are ill."},
+ {w:"definitely",   g:"✅", ar:"بالتأكيد",            p:"adverb",    ex:"I will definitely be there.", t:1, d:"without any doubt", x:"That is definitely the wrong platform."},
+ {w:"separate",     g:"✂️", ar:"منفصل",              p:"adjective", ex:"Use a separate sheet for notes.", t:1, d:"not joined to something else; kept apart", x:"Men and women use separate entrances."},
+ {w:"recommend",    g:"👍", ar:"يوصي / ينصح بـ",      p:"verb",      ex:"I recommend the morning session.", t:1, d:"to say that something is good and worth trying", x:"Which book do you recommend for reading?"},
+ {w:"address",      g:"🏠", ar:"عنوان",               p:"noun",      ex:"Write your address in block capitals.", t:1, d:"the details of where someone lives or works", x:"They posted the letter to my old address."},
+ {w:"business",     g:"💼", ar:"عمل / تجارة",         p:"noun",      ex:"She studies business management.", t:1, d:"the activity of buying and selling; a company", x:"He runs a small family business."},
+ {w:"calendar",     g:"🗓️", ar:"تقويم / نتيجة",      p:"noun",      ex:"The dates are on the calendar.", t:1, d:"a chart showing the days and months of a year", x:"Mark the exam date on your calendar."},
+ {w:"colleague",    g:"👔", ar:"زميل عمل",            p:"noun",      ex:"Ask a colleague to check the form.", t:1, d:"a person you work with", x:"My colleague will cover the shift."},
+ {w:"committee",    g:"🗳️", ar:"لجنة",               p:"noun",      ex:"The committee meets every month.", t:1, d:"a group of people chosen to make decisions", x:"The committee approved the new plan."},
+ {w:"foreign",      g:"🌐", ar:"أجنبي",               p:"adjective", ex:"He speaks three foreign languages.", t:1, d:"belonging to a country that is not your own", x:"The bank changes foreign currency."},
+ {w:"maintenance",  g:"🔧", ar:"صيانة",               p:"noun",      ex:"Maintenance work starts on Monday.", t:1, d:"the work of keeping something in good condition", x:"The lift is closed for maintenance."},
+ {w:"opportunity",  g:"🚪", ar:"فرصة",                p:"noun",      ex:"It is a great opportunity to travel.", t:1, d:"a chance to do something you want to do", x:"Do not miss this opportunity."},
+ {w:"receive",      g:"📥", ar:"يستلم",               p:"verb",      ex:"You will receive an email tomorrow.", t:1, d:"to get something that is sent or given to you", x:"Did you receive my message?"},
+ {w:"schedule",     g:"📆", ar:"جدول زمني",           p:"noun",      ex:"Check the schedule before you come.", t:1, d:"a plan showing the times of events", x:"The schedule is on the noticeboard."},
+ {w:"successful",   g:"🏆", ar:"ناجح",                p:"adjective", ex:"The campaign was very successful.", t:1, d:"achieving what you wanted to achieve", x:"The trial was successful."},
+ {w:"beginning",    g:"🚦", ar:"بداية",               p:"noun",      ex:"Pay the fee at the beginning of term.", t:1, d:"the first part of something", x:"Read the beginning of chapter two."},
+ {w:"achieve",      g:"🎯", ar:"يحقق / ينجز",         p:"verb",      ex:"She wants to achieve band seven.", t:1, d:"to succeed in doing something after effort", x:"You can achieve a lot in six weeks."},
+ {w:"brochure",     g:"📔", ar:"كتيب دعائي",          p:"noun",      ex:"The brochure lists all the prices.", t:1, d:"a small book with pictures and information", x:"Take a brochure from the desk."},
+ {w:"budget",       g:"💰", ar:"ميزانية",             p:"noun",      ex:"The budget covers travel and food.", t:1, d:"the amount of money available for something", x:"The trip is outside my budget."},
+ {w:"campus",       g:"🏫", ar:"حرم جامعي",           p:"noun",      ex:"The main campus is outside the city.", t:1, d:"the land and buildings of a university", x:"There are three cafes on campus."},
+ {w:"certificate",  g:"📜", ar:"شهادة",               p:"noun",      ex:"You get a certificate at the end.", t:1, d:"an official document that proves something", x:"Bring your birth certificate."},
+ {w:"conference",   g:"🎤", ar:"مؤتمر",               p:"noun",      ex:"The conference lasts three days.", t:1, d:"a large formal meeting about a subject", x:"She spoke at a medical conference."},
+ {w:"deposit",      g:"💵", ar:"عربون / وديعة",       p:"noun",      ex:"Pay a deposit of fifty pounds.", t:1, d:"money paid in advance as security", x:"The deposit is returned at the end."},
+ {w:"efficient",    g:"⚙️", ar:"كفء / فعّال",        p:"adjective", ex:"The new system is more efficient.", t:1, d:"working well without wasting time or energy", x:"Email is an efficient way to reply."},
+ {w:"exhibition",   g:"🖼️", ar:"معرض",               p:"noun",      ex:"The exhibition opens next weekend.", t:1, d:"a public show of art or interesting objects", x:"The photography exhibition ends on Sunday."},
+ {w:"February",     g:"❄️", ar:"فبراير",             p:"noun",      ex:"The course begins in February.", t:1, d:"the second month of the year", x:"Term starts on the fifth of February."},
+ {w:"guarantee",    g:"🛡️", ar:"ضمان",               p:"noun",      ex:"The laptop has a two year guarantee.", t:1, d:"a promise to repair or replace a product", x:"The guarantee covers parts and labour."},
+ {w:"insurance",    g:"📑", ar:"تأمين",               p:"noun",      ex:"Travel insurance is strongly advised.", t:1, d:"an agreement that pays you if something goes wrong", x:"Health insurance is included in the fee."},
+ {w:"itinerary",    g:"🗺️", ar:"خط سير الرحلة",      p:"noun",      ex:"The itinerary includes two museums.", t:1, d:"a plan of a journey, with places and times", x:"The guide handed out the itinerary."},
+ {w:"luggage",      g:"🧳", ar:"حقائب السفر",         p:"noun",      ex:"Leave your luggage at reception.", t:1, d:"the bags you take with you when you travel", x:"Excess luggage costs extra."},
+ {w:"membership",   g:"🎫", ar:"عضوية",               p:"noun",      ex:"Membership costs twenty pounds a year.", t:1, d:"the state of belonging to a club or group", x:"Membership includes free classes."},
+ {w:"passenger",    g:"🚌", ar:"راكب",                p:"noun",      ex:"Each passenger needs a valid ticket.", t:1, d:"someone travelling in a vehicle but not driving", x:"The bus carries fifty passengers."},
+ {w:"pharmacy",     g:"💊", ar:"صيدلية",              p:"noun",      ex:"The pharmacy is opposite the bank.", t:1, d:"a shop where medicines are sold", x:"The pharmacy stays open until midnight."},
+ {w:"psychology",   g:"🧩", ar:"علم النفس",           p:"noun",      ex:"He is studying psychology at Leeds.", t:1, d:"the study of the mind and behaviour", x:"She has a degree in psychology."},
+ {w:"receptionist", g:"🛎️", ar:"موظف استقبال",       p:"noun",      ex:"Give your name to the receptionist.", t:1, d:"someone who greets visitors at a desk", x:"The receptionist will keep your bag."},
+ {w:"souvenir",     g:"🎁", ar:"تذكار",               p:"noun",      ex:"The shop sells souvenirs and maps.", t:1, d:"an object you keep to remember a place", x:"I bought a souvenir from the market."},
+ {w:"stadium",      g:"🏟️", ar:"استاد",              p:"noun",      ex:"The stadium holds sixty thousand people.", t:1, d:"a large sports ground with seats around it", x:"The new stadium opens in March."},
+ {w:"statistics",   g:"📈", ar:"إحصاءات",             p:"noun",      ex:"The statistics show a clear rise.", t:1, d:"numbers that give information about something", x:"The statistics come from a 2019 survey."},
+ {w:"supermarket",  g:"🛒", ar:"سوبر ماركت",          p:"noun",      ex:"There is a supermarket on campus.", t:1, d:"a large shop selling food and household goods", x:"The supermarket delivers on Sundays."},
+ {w:"surgery",      g:"🏥", ar:"عيادة / جراحة",       p:"noun",      ex:"The doctor's surgery opens at eight.", t:1, d:"a place where you see a doctor; a medical operation", x:"Book the surgery appointment early."},
+ {w:"timetable",    g:"⏰", ar:"جدول مواعيد",         p:"noun",      ex:"The bus timetable changes in June.", t:1, d:"a list of times when buses, trains or classes run", x:"The new timetable starts next week."},
+ {w:"vegetarian",   g:"🥗", ar:"نباتي",               p:"adjective", ex:"A vegetarian option is available.", t:1, d:"someone who does not eat meat", x:"Two vegetarian meals are included."},
+ {w:"warehouse",    g:"📦", ar:"مخزن",                p:"noun",      ex:"The goods are kept in a warehouse.", t:1, d:"a large building used for storing goods", x:"The books are shipped from a warehouse."},
+ {w:"Wednesday",    g:"📅", ar:"الأربعاء",            p:"noun",      ex:"The class is on Wednesday evening.", t:1, d:"the day between Tuesday and Thursday", x:"The library is closed on Wednesday."},
+ {w:"aluminium",    g:"🥫", ar:"ألومنيوم",            p:"noun",      ex:"The frame is made of aluminium.", t:1, d:"a light silver-coloured metal", x:"Aluminium cans are easy to recycle."},
+ {w:"physiotherapy",g:"🦵", ar:"علاج طبيعي",          p:"noun",      ex:"She needs physiotherapy twice a week.", t:1, d:"treatment for injuries using exercise and massage", x:"He had physiotherapy after the accident."},
+ {w:"laundry",      g:"🧺", ar:"غسيل / مغسلة",        p:"noun",      ex:"The laundry room is in the basement.", t:1, d:"clothes that need washing; a place to wash them", x:"There is a laundry on the ground floor."},
+ {w:"neighbourhood",g:"🏘️", ar:"حي / منطقة سكنية",   p:"noun",      ex:"It is a quiet neighbourhood.", t:1, d:"the area around where you live", x:"The neighbourhood has a weekly market."}
 ];
 
 /* ------------------------------------------------------------------ */
@@ -340,7 +403,7 @@ let stats = {};          // { word: {seen, wrong} }
 let queue = [], idx = 0, cur = null;
 let right = 0, asked = 0, streak = 0, best = 0;
 let firstTry = true, tries = 0, answered = false, missed = [], lastDeck = 'all';
-let voice = null, unlocked = false;
+let voice = null, unlocked = false, customPool = [], libFilter = 'all', backTo = 's-start';
 
 /* ---------- storage ---------- */
 async function loadStats(){
@@ -355,20 +418,39 @@ async function loadStats(){
       if(r) stats = JSON.parse(r.value);
     }catch(e){}
   }
+  Object.keys(stats).forEach(k=>{                 // ترقية أي سجل قديم
+    const e = stats[k];
+    if(e && e.seen !== undefined) stats[k] = {r: Math.max(0,(e.seen||0)-(e.wrong||0)), w: e.wrong||0, b: 0};
+  });
   renderCounts();
 }
 async function saveStats(){
+  Object.keys(stats).forEach(k=>{ const e=stats[k]; if(!e.r && !e.w && !e.b) delete stats[k]; });
   const s = JSON.stringify(stats);
   try{ localStorage.setItem(SKEY, s); }catch(e){}
   try{ await window.storage.set(SKEY, s); }catch(e){}
 }
+/* سجل كل كلمة: r = مرات الصح، w = مرات الغلط، b = محفوظة */
+function g(word){ return stats[word] || {r:0, w:0, b:0}; }   // قراءة من غير ما نكتب
+function st(word){
+  let e = stats[word];
+  if(!e){ e = stats[word] = {r:0, w:0, b:0}; }
+  if(e.seen !== undefined){                       // ترقية السجل القديم
+    e = stats[word] = {r: Math.max(0,(e.seen||0)-(e.wrong||0)), w: e.wrong||0, b: e.b?1:0};
+  }
+  if(e.r===undefined) e.r=0; if(e.w===undefined) e.w=0; if(e.b===undefined) e.b=0;
+  return e;
+}
+function tried(word){ const e = g(word); return (e.r + e.w) > 0; }
 function renderCounts(){
   $('n-notebook').textContent = WORDS.filter(w=>!w.t).length;
   $('n-traps').textContent    = WORDS.filter(w=> w.t).length;
   $('n-all').textContent      = WORDS.length;
   $('n-weak').textContent     = weakWords().length;
+  $('n-book').textContent     = bookWords().length;
 }
-function weakWords(){ return WORDS.filter(w => (stats[w.w]?.wrong || 0) > 0); }
+function weakWords(){ return WORDS.filter(w => g(w.w).w > 0); }
+function bookWords(){ return WORDS.filter(w => g(w.w).b); }
 
 /* ---------- speech ---------- */
 function pickVoice(){
@@ -382,8 +464,9 @@ if('speechSynthesis' in window){
   pickVoice();
   speechSynthesis.onvoiceschanged = pickVoice;
 }
-function say(text, rate){
-  if(!('speechSynthesis' in window) || !cur) return;
+function say(text, rate){ if(!cur) return; say2(text, rate); }
+function say2(text, rate){
+  if(!('speechSynthesis' in window)) return;
   speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(text);
   u.lang = voice ? voice.lang : 'en-GB';
@@ -420,11 +503,14 @@ function align(a, b){
 /* ---------- flow ---------- */
 function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=(Math.random()*(i+1))|0;[a[i],a[j]]=[a[j],a[i]];} return a; }
 
-function startDeck(deck){
+function startDeck(deck, custom){
   lastDeck = deck;
+  if(custom) customPool = custom;
   let pool = deck==='notebook' ? WORDS.filter(w=>!w.t)
            : deck==='traps'    ? WORDS.filter(w=> w.t)
            : deck==='weak'     ? weakWords()
+           : deck==='book'     ? bookWords()
+           : deck==='custom'   ? customPool
            : WORDS;
   if(!pool.length) pool = WORDS.filter(w=>!w.t);
   queue = shuffle(pool).slice(0, 15);
@@ -433,7 +519,7 @@ function startDeck(deck){
   next();
 }
 function show(id){
-  ['s-start','s-drill','s-done'].forEach(s=>$(s).classList.toggle('on', s===id));
+  ['s-start','s-drill','s-lib','s-done'].forEach(s=>$(s).classList.toggle('on', s===id));
   window.scrollTo(0,0);
 }
 function next(){
@@ -450,6 +536,7 @@ function next(){
   $('btn-check').textContent = 'تصحيح';
   $('btn-hint').style.visibility = 'visible';
   $('bar').style.width = (idx / queue.length * 100) + '%';
+  $('btn-book').classList.toggle('on', !!g(cur.w).b);
   updateChips();
   if(unlocked) setTimeout(()=>say(cur.w, .85), 220);
   $('answer').focus();
@@ -468,11 +555,10 @@ function check(){
   const {pairs, dist} = align(user, target);
   const ok = dist === 0;
 
-  stats[cur.w] = stats[cur.w] || {seen:0, wrong:0};
-  stats[cur.w].seen++;
+  const rec = st(cur.w);
 
   if(ok){
-    if(firstTry){ right++; asked++; streak++; best=Math.max(best,streak); }
+    if(firstTry){ right++; asked++; streak++; best=Math.max(best,streak); rec.r++; }
     answered = true;
     $('answer').disabled = true;
     $('btn-check').textContent = 'الكلمة اللي بعدها ›';
@@ -483,7 +569,7 @@ function check(){
   } else {
     tries++;
     if(tries === 1){
-      asked++; streak = 0; stats[cur.w].wrong++;
+      asked++; streak = 0; rec.w++;
       if(!missed.includes(cur.w)) missed.push(cur.w);
       // ترجع تاني في نفس الجولة بعد كام كلمة
       if(queue.slice(idx+1).indexOf(cur) === -1) queue.splice(Math.min(idx+3, queue.length), 0, cur);
@@ -541,7 +627,7 @@ function renderVerdict(ok, pairs, dist, revealed){
         '<span class="lbl">أنت كتبت</span><div class="lrow">'+ (userRow || '<span class="cell gap">·</span>') +'</div>' +
         (showTarget ? '<span class="lbl" style="margin-top:6px">الصح</span><div class="lrow">'+targRow+'</div>' : '') +
       '</div>' +
-      (showTarget ? '<p class="example">'+ cur.ex.replace(new RegExp('('+cur.w+')','i'),'<b>$1</b>') +'</p>' : '') +
+      (showTarget ? '<div class="def">'+ cur.w +' — '+ cur.d +'</div>' + sentences(cur) : '') +
     '</div>';
   if(showTarget) setTimeout(()=>say(cur.w, .7), 300);
 }
@@ -568,9 +654,86 @@ function finish(){
   show('s-done');
 }
 
+/* ---------- library ---------- */
+function hl(s, w){ return s.replace(new RegExp('('+w+')','i'), '<b>$1</b>'); }
+function sentences(o){ return '<p class="sent">'+hl(o.ex,o.w)+'</p><p class="sent">'+hl(o.x,o.w)+'</p>'; }
+
+function libList(){
+  const q = $('lib-search').value.trim().toLowerCase();
+  return WORDS.filter(o=>{
+    const e = g(o.w);
+    if(libFilter==='wrong' && !e.w) return false;
+    if(libFilter==='book'  && !e.b) return false;
+    if(libFilter==='new'   && tried(o.w)) return false;
+    if(libFilter==='done'  && !(e.r>0 && e.w===0)) return false;
+    if(q && !(o.w.toLowerCase().includes(q) || o.ar.includes(q))) return false;
+    return true;
+  });
+}
+function renderLib(){
+  const list = libList();
+  $('lib-count').textContent = list.length + ' كلمة';
+  $('lib-drill').textContent = list.length ? 'درّب على المعروض (' + list.length + ')' : 'مفيش كلمات هنا';
+  $('lib-drill').disabled = !list.length;
+  if(!list.length){
+    $('lib-list').innerHTML = '<p class="empty">مفيش كلمات في الفلتر ده.<br>جرب تبدّل التبويب أو تمسح البحث.</p>';
+    return;
+  }
+  $('lib-list').innerHTML = list.map(o=>{
+    const e = g(o.w);
+    const tal = tried(o.w)
+      ? '<i class="g">✓ '+e.r+'</i><i class="'+(e.w?'r':'')+'">✕ '+e.w+'</i>'
+      : '<i>لسه</i>';
+    return '<div class="wrow" data-w="'+o.w+'">' +
+      '<div class="whead">' +
+        '<span class="rg">'+o.g+'</span>' +
+        '<span class="rt"><span class="wd">'+o.w+'</span><span class="ar">'+o.ar+'</span></span>' +
+        '<span class="tally">'+tal+'</span>' +
+        '<button class="bk'+(e.b?' on':'')+'" data-bk="'+o.w+'">🔖</button>' +
+      '</div>' +
+      '<div class="wdet">' +
+        '<div class="def">'+o.d+'</div>' + sentences(o) +
+        '<div class="dact">' +
+          '<button data-say="'+o.w+'">🔊 اسمعها</button>' +
+          '<button data-one="'+o.w+'">✍️ اتمرن عليها</button>' +
+        '</div>' +
+      '</div></div>';
+  }).join('');
+}
+function openLib(){ renderLib(); show('s-lib'); }
+
+$('go-lib').addEventListener('click', ()=>{ backTo='s-start'; openLib(); });
+function goBack(){ renderCounts(); if(backTo==='s-lib') renderLib(); show(backTo); }
+$('lib-back').addEventListener('click', ()=>{ renderCounts(); show('s-start'); });
+$('lib-search').addEventListener('input', renderLib);
+$('lib-blur').addEventListener('change', e=> $('lib-list').classList.toggle('blur', e.target.checked));
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on', x===t));
+    libFilter = t.dataset.f; renderLib();
+  });
+});
+$('lib-drill').addEventListener('click', ()=>{ const l = libList(); if(l.length){ unlocked = true; backTo = 's-lib'; startDeck('custom', l); } });
+$('lib-list').addEventListener('click', e=>{
+  const bk = e.target.closest('[data-bk]');
+  if(bk){ const r = st(bk.dataset.bk); r.b = r.b ? 0 : 1; bk.classList.toggle('on', !!r.b); saveStats(); return; }
+  const say = e.target.closest('[data-say]');
+  if(say){ unlocked = true; cur = WORDS.find(o=>o.w===say.dataset.say); say2(say.dataset.say, .8); return; }
+  const one = e.target.closest('[data-one]');
+  if(one){ unlocked = true; backTo = 's-lib'; startDeck('custom', WORDS.filter(o=>o.w===one.dataset.one)); return; }
+  const wd = e.target.closest('.wd');
+  if(wd && $('lib-list').classList.contains('blur')){ wd.classList.toggle('shown'); return; }
+  const head = e.target.closest('.whead');
+  if(head) head.parentElement.classList.toggle('open');
+});
+
 /* ---------- events ---------- */
-document.querySelectorAll('.deck').forEach(b=>{
-  b.addEventListener('click', ()=>{ unlocked = true; startDeck(b.dataset.deck); });
+document.querySelectorAll('.deck[data-deck]').forEach(b=>{
+  b.addEventListener('click', ()=>{ unlocked = true; backTo = 's-start'; startDeck(b.dataset.deck); });
+});
+$('btn-book').addEventListener('click', ()=>{
+  const r = st(cur.w); r.b = r.b ? 0 : 1;
+  $('btn-book').classList.toggle('on', !!r.b); saveStats();
 });
 $('btn-play').addEventListener('click', ()=> say(cur.w, .85));
 $('btn-slow').addEventListener('click', ()=> say(cur.w, .55));
@@ -580,16 +743,15 @@ $('btn-skip').addEventListener('click', ()=>{
   if(answered){ idx++; next(); return; }
   if(firstTry){
     asked++; streak = 0;
-    stats[cur.w] = stats[cur.w] || {seen:0, wrong:0};
-    stats[cur.w].wrong++;
+    st(cur.w).w++;
     if(!missed.includes(cur.w)) missed.push(cur.w);
     saveStats();
   }
   reveal();
 });
-$('btn-back').addEventListener('click', ()=>{ speechSynthesis.cancel(); renderCounts(); show('s-start'); });
+$('btn-back').addEventListener('click', ()=>{ try{speechSynthesis.cancel();}catch(e){} goBack(); });
 $('btn-again').addEventListener('click', ()=> startDeck(lastDeck));
-$('btn-home').addEventListener('click', ()=>{ renderCounts(); show('s-start'); });
+$('btn-home').addEventListener('click', goBack);
 $('answer').addEventListener('keydown', e=>{ if(e.key === 'Enter'){ e.preventDefault(); check(); } });
 
 /* ---------- PWA: install as a home-screen app ---------- */
