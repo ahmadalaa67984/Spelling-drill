@@ -179,6 +179,12 @@
   .sent b{background:var(--amber);border-radius:3px;padding:0 3px}
   .dact{display:flex;gap:8px;margin-top:12px}
   .dact button{flex:1;border:1px solid var(--line);background:#fff;border-radius:10px;padding:9px;font-family:inherit;font-size:13px;font-weight:600;color:var(--ink);cursor:pointer}
+  textarea.imp{width:100%;min-height:190px;padding:14px;border-radius:14px;border:1px solid var(--line);background:var(--card);font-family:var(--mono);font-size:13.5px;line-height:1.7;direction:ltr;text-align:left;outline:none;resize:vertical}
+  textarea.imp:focus{border-color:var(--primary)}
+  .fmt{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;font-size:13px;line-height:1.9;color:var(--muted);margin-bottom:12px}
+  .fmt code{font-family:var(--mono);direction:ltr;display:inline-block;background:var(--paper);border-radius:6px;padding:1px 6px;color:var(--ink);font-size:12.5px}
+  .rslt{margin-top:12px;border-radius:12px;padding:12px 14px;font-size:13.5px;line-height:1.8;background:var(--ok-soft);border:1px solid #B9E6D6}
+  .rslt.bad{background:var(--bad-soft);border-color:#F3C6C9}
   .empty{text-align:center;color:var(--ink);font-size:15px;font-weight:600;padding:38px 16px;line-height:1.9;background:var(--card);border:1px dashed var(--line);border-radius:14px}
   .empty span{display:block;margin-top:6px;font-size:13px;font-weight:400;color:var(--muted);line-height:1.8}
   .bkcard{position:absolute;left:12px;top:12px;background:none;border:0;font-size:20px;padding:4px;cursor:pointer;opacity:.28;filter:grayscale(1)}
@@ -219,6 +225,11 @@
       <span class="ic">🔖</span>
       <span class="t"><b>المحفوظة</b><span>اللي علّمت عليها بالبوكمارك</span></span>
       <span class="n" id="n-book">0</span>
+    </button>
+    <button class="deck" id="go-imp">
+      <span class="ic">📥</span>
+      <span class="t"><b>ضيف كلماتك</b><span>الصق أي قائمة أو تصدير Anki وهتتضاف للتطبيق</span></span>
+      <span class="n" id="n-custom">0</span>
     </button>
     <button class="deck" id="go-lib" style="border-color:var(--primary);border-width:1.5px">
       <span class="ic" style="background:var(--ink);color:#fff">📚</span>
@@ -265,6 +276,36 @@
 
     <div id="verdict"></div>
     <div class="foot"><span id="btn-skip" style="cursor:pointer">تخطي الكلمة دي ›</span></div>
+  </section>
+
+  <!-- ============ IMPORT ============ -->
+  <section id="s-imp" class="screen">
+    <header>
+      <button class="mark" id="imp-back" style="background:none;border:0;font-family:inherit;color:var(--muted);cursor:pointer;padding:0">‹ رجوع</button>
+      <div class="stats"><span class="chip" id="imp-have">0</span></div>
+    </header>
+    <h1 class="en" style="font-size:24px">Add words</h1>
+    <p class="sub" style="margin-bottom:16px">الصق أي قائمة كلمات — كل كلمة في سطر. بتتحفظ على جهازك وبتتضاف للتطبيق على طول.</p>
+    <div class="fmt">
+      كل سطر ممكن يكون:<br>
+      <code>accommodation</code> — الكلمة لوحدها<br>
+      <code>accommodation = سكن</code> — كلمة ومعنى<br>
+      <code>accommodation = سكن = a place to stay</code> — وكمان تعريف<br>
+      <code>accommodation = سكن = a place to stay = The fee excludes accommodation.</code> — وجملة<br>
+      الفاصل ممكن يكون <code>=</code> أو <code>|</code> أو <code>Tab</code> (زي تصدير Anki).
+    </div>
+    <textarea class="imp" id="imp-text" placeholder="accommodation = سكن&#10;questionnaire = استبيان&#10;maintenance"></textarea>
+    <div class="row"><button class="act" id="imp-add">أضف الكلمات</button></div>
+    <div id="imp-out"></div>
+    <p class="lbl" style="color:var(--muted);margin-top:26px">نسخة احتياطية</p>
+    <div class="row" style="margin-top:8px">
+      <button class="sub" id="imp-export" style="flex:1">⬇️ حفظ نسخة</button>
+      <button class="sub" id="imp-restore" style="flex:1">⬆️ استرجاع</button>
+      <button class="sub" id="imp-clear">🗑️ امسح المستوردة</button>
+    </div>
+    <input type="file" id="imp-file" accept=".json" style="display:none">
+    <p class="note" style="margin-top:12px">النسخة الاحتياطية فيها كلماتك المستوردة + سجل الصح والغلط + البوكماركس. خدها معاك لو غيّرت موبايل.</p>
+    <div class="foot"></div>
   </section>
 
   <!-- ============ LIBRARY ============ -->
@@ -549,18 +590,164 @@ const WORDS = [
  {w:"approximately", g:"➗", ar:"تقريبًا", p:"adverb", ex:"Approximately 200 people attended.", d:"almost exactly but not completely", x:"The trip takes approximately two hours.", t:1, c:"trend"},
  {w:"respectively", g:"🔢", ar:"على التوالي", p:"adverb", ex:"Sales rose by 5% and 8% respectively.", d:"in the same order as the things already named", x:"They finished first and third respectively.", t:1, c:"trend"},
  {w:"overall", g:"🧮", ar:"إجمالًا / بشكل عام", p:"adverb", ex:"Overall, the results were positive.", d:"considering everything together", x:"Numbers fell overall during the period.", t:1, c:"trend"}
+,
+ // ---- art ----
+ {w:"architecture", g:"🏛️", ar:"العمارة", p:"noun", ex:"She studies architecture in Cairo.", d:"the art of designing buildings", x:"The architecture here is mostly Victorian.", t:1, c:"art"},
+ {w:"sculpture", g:"🗿", ar:"نحت / تمثال", p:"noun", ex:"A bronze sculpture stands in the square.", d:"a work of art made from stone, wood or metal", x:"The sculpture took two years to finish.", t:1, c:"art"},
+ {w:"gallery", g:"🖼️", ar:"معرض فني", p:"noun", ex:"The gallery is free on Wednesdays.", d:"a room or building where art is shown", x:"Her work hangs in a small gallery.", t:1, c:"art"},
+ {w:"portrait", g:"🧑‍🎨", ar:"صورة شخصية", p:"noun", ex:"The portrait was painted in 1890.", d:"a painting or photograph of a person", x:"He sat for his portrait twice.", t:1, c:"art"},
+ {w:"craft", g:"🧶", ar:"حرفة يدوية", p:"noun", ex:"Pottery is an ancient craft.", d:"an activity that needs skill with your hands", x:"The market sells local craft work.", t:1, c:"art"},
+ {w:"performance", g:"🎭", ar:"عرض / أداء", p:"noun", ex:"The performance starts at half past seven.", d:"the act of performing a play or piece of music", x:"Her performance was widely praised.", t:1, c:"art"},
+ {w:"orchestra", g:"🎻", ar:"أوركسترا", p:"noun", ex:"The orchestra plays every Friday.", d:"a large group of musicians playing together", x:"He joined the school orchestra.", t:1, c:"art"},
+ {w:"exhibit", g:"🏺", ar:"معروضة / يعرض", p:"noun", ex:"The oldest exhibit is a Roman coin.", d:"an object shown in a museum", x:"New exhibits arrive each spring.", t:1, c:"art"},
+ {w:"design", g:"✏️", ar:"تصميم", p:"noun", ex:"The design won an international prize.", d:"the way something is planned and made", x:"They changed the design after testing.", t:1, c:"art"},
+ {w:"photography", g:"📷", ar:"التصوير الفوتوغرافي", p:"noun", ex:"She teaches photography at the college.", d:"the art of taking pictures", x:"Photography is not allowed inside.", t:1, c:"art"},
+ // ---- sport ----
+ {w:"athlete", g:"🏃", ar:"رياضي", p:"noun", ex:"Every athlete trains six days a week.", d:"someone who is good at sport and competes in it", x:"The athlete broke her own record.", t:1, c:"sport"},
+ {w:"tournament", g:"🏆", ar:"بطولة", p:"noun", ex:"The tournament lasts ten days.", d:"a competition with a series of games", x:"They were knocked out of the tournament.", t:1, c:"sport"},
+ {w:"opponent", g:"🥊", ar:"الخصم", p:"noun", ex:"His opponent was much taller.", d:"the person you play against", x:"She studied her opponent's style.", t:1, c:"sport"},
+ {w:"referee", g:"🧑‍⚖️", ar:"الحكم", p:"noun", ex:"The referee stopped the game early.", d:"the official who controls a match", x:"Players argued with the referee.", t:1, c:"sport"},
+ {w:"spectator", g:"👀", ar:"متفرّج", p:"noun", ex:"Spectators filled every seat.", d:"someone who watches an event", x:"Only 200 spectators came.", t:1, c:"sport"},
+ {w:"amateur", g:"🎽", ar:"هاوٍ", p:"adjective", ex:"He plays in an amateur league.", d:"doing something for pleasure, not as a job", x:"The club is strictly amateur.", t:1, c:"sport"},
+ {w:"endurance", g:"🥵", ar:"التحمل", p:"noun", ex:"Long runs build endurance.", d:"the ability to keep going for a long time", x:"The race is a test of endurance.", t:1, c:"sport"},
+ {w:"coach", g:"📣", ar:"مدرب", p:"noun", ex:"The coach changed the whole team.", d:"someone who trains a person or team", x:"She works as a swimming coach.", t:1, c:"sport"},
+ {w:"fitness", g:"💪", ar:"اللياقة البدنية", p:"noun", ex:"Fitness improves with regular walking.", d:"the condition of being healthy and strong", x:"The centre has a fitness room.", t:1, c:"sport"},
+ {w:"championship", g:"🥇", ar:"بطولة / لقب", p:"noun", ex:"They won the championship twice.", d:"a competition to find the best player or team", x:"The championship is held in July.", t:1, c:"sport"},
+ // ---- media ----
+ {w:"advertisement", g:"📺", ar:"إعلان", p:"noun", ex:"The advertisement appeared in every paper.", d:"a notice that tries to sell something", x:"She answered an advertisement for a flat.", t:1, c:"media"},
+ {w:"audience", g:"👥", ar:"الجمهور", p:"noun", ex:"The audience clapped for a long time.", d:"the people who watch or listen to something", x:"The show has a young audience.", t:1, c:"media"},
+ {w:"broadcast", g:"📡", ar:"بث / يذيع", p:"verb", ex:"The match was broadcast live.", d:"to send out a programme on radio or television", x:"They broadcast the news at six.", t:1, c:"media"},
+ {w:"journalist", g:"🗞️", ar:"صحفي", p:"noun", ex:"A journalist interviewed the mayor.", d:"someone who writes for a newspaper or news site", x:"She trained as a journalist in Leeds.", t:1, c:"media"},
+ {w:"headline", g:"📰", ar:"عنوان رئيسي", p:"noun", ex:"The headline was misleading.", d:"the title of a newspaper story", x:"It made the front page headline.", t:1, c:"media"},
+ {w:"publish", g:"🖨️", ar:"ينشر", p:"verb", ex:"The study was published in March.", d:"to produce a book, paper or article for the public", x:"They publish four issues a year.", t:1, c:"media"},
+ {w:"documentary", g:"🎬", ar:"فيلم وثائقي", p:"noun", ex:"The documentary is about desert farming.", d:"a film giving facts about a real subject", x:"He filmed a documentary in Alaska.", t:1, c:"media"},
+ {w:"subscribe", g:"✅", ar:"يشترك", p:"verb", ex:"Subscribe to the newsletter for updates.", d:"to pay to receive something regularly", x:"Half the students subscribe to it.", t:1, c:"media"},
+ {w:"influence", g:"🧲", ar:"تأثير / يؤثر", p:"noun", ex:"Advertising has a strong influence on children.", d:"the power to change how someone thinks or acts", x:"Her influence on the team was clear.", t:1, c:"media"},
+ {w:"reliable", g:"🔐", ar:"موثوق", p:"adjective", ex:"Use reliable sources in your essay.", d:"that you can trust to be correct", x:"The old data is not reliable.", t:1, c:"media"},
+ // ---- food ----
+ {w:"ingredient", g:"🥄", ar:"مكوّن", p:"noun", ex:"The main ingredient is rice.", d:"one of the foods used to make a dish", x:"Read the list of ingredients first.", t:1, c:"food"},
+ {w:"recipe", g:"📖", ar:"وصفة طبخ", p:"noun", ex:"The recipe serves four people.", d:"instructions for cooking a dish", x:"She wrote down her grandmother's recipe.", t:1, c:"food"},
+ {w:"cuisine", g:"🍲", ar:"مطبخ / فن الطهي", p:"noun", ex:"Thai cuisine is popular here.", d:"a style of cooking from a country or region", x:"The restaurant serves local cuisine.", t:1, c:"food"},
+ {w:"organic", g:"🥬", ar:"عضوي", p:"adjective", ex:"Organic vegetables cost more.", d:"grown without artificial chemicals", x:"The farm went organic in 2012.", t:1, c:"food"},
+ {w:"harvest", g:"🌾", ar:"الحصاد", p:"noun", ex:"The harvest was poor this year.", d:"the gathering of crops", x:"Harvest begins in late August.", t:1, c:"food"},
+ {w:"protein", g:"🍗", ar:"بروتين", p:"noun", ex:"Beans are a cheap source of protein.", d:"a substance in food that the body needs to grow", x:"Add protein to every meal.", t:1, c:"food"},
+ {w:"dairy", g:"🥛", ar:"ألبان", p:"noun", ex:"The shop has a large dairy section.", d:"milk and food made from milk", x:"He avoids all dairy products.", t:1, c:"food"},
+ {w:"beverage", g:"🥤", ar:"مشروب", p:"noun", ex:"Hot beverages are served all day.", d:"a drink", x:"The price includes one beverage.", t:1, c:"food"},
+ {w:"canteen", g:"🍱", ar:"مقصف / كافتيريا", p:"noun", ex:"The canteen closes at three.", d:"a place in a school or workplace where meals are served", x:"Lunch in the canteen costs four pounds.", t:1, c:"food"},
+ {w:"portion", g:"🍽️", ar:"حصة / جزء", p:"noun", ex:"The portions here are very large.", d:"an amount of food for one person", x:"Cut the cake into eight portions.", t:1, c:"food"},
+ // ---- home ----
+ {w:"apartment", g:"🏢", ar:"شقة", p:"noun", ex:"The apartment has two bedrooms.", d:"a set of rooms to live in inside a larger building", x:"They rent an apartment near the park.", t:1, c:"home"},
+ {w:"tenant", g:"🔑", ar:"مستأجر", p:"noun", ex:"The tenant moved out in April.", d:"someone who pays rent to live somewhere", x:"Tenants must give one month's notice.", t:1, c:"home"},
+ {w:"landlord", g:"🏠", ar:"مالك العقار", p:"noun", ex:"The landlord fixed the heating.", d:"a person who rents out property", x:"Ask the landlord before you paint.", t:1, c:"home"},
+ {w:"furniture", g:"🛋️", ar:"أثاث", p:"noun", ex:"The room comes with basic furniture.", d:"tables, chairs, beds and similar items", x:"They bought second hand furniture.", t:1, c:"home"},
+ {w:"utilities", g:"💡", ar:"مرافق (كهرباء ومياه)", p:"noun", ex:"The rent does not include utilities.", d:"services such as water, gas and electricity", x:"Utilities cost about 60 a month.", t:1, c:"home"},
+ {w:"suburb", g:"🏘️", ar:"ضاحية", p:"noun", ex:"They live in a quiet suburb.", d:"an area on the edge of a city where people live", x:"The suburb has its own station.", t:1, c:"home"},
+ {w:"corridor", g:"🚪", ar:"ممر", p:"noun", ex:"The office is at the end of the corridor.", d:"a long narrow passage inside a building", x:"Do not leave bags in the corridor.", t:1, c:"home"},
+ {w:"basement", g:"🕳️", ar:"بدروم", p:"noun", ex:"The gym is in the basement.", d:"a room below ground level", x:"The basement floods every winter.", t:1, c:"home"},
+ {w:"balcony", g:"🪴", ar:"بلكونة", p:"noun", ex:"The flat has a small balcony.", d:"a platform outside an upper window", x:"We eat on the balcony in summer.", t:1, c:"home"},
+ {w:"renovation", g:"🔨", ar:"تجديد / ترميم", p:"noun", ex:"The renovation took eight months.", d:"the work of repairing and improving a building", x:"The hotel closed for renovation.", t:1, c:"home"},
+ // ---- law ----
+ {w:"legislation", g:"📜", ar:"تشريع", p:"noun", ex:"New legislation came into force in May.", d:"a law or set of laws", x:"The legislation protects tenants.", t:1, c:"law"},
+ {w:"regulation", g:"📏", ar:"لائحة / قاعدة", p:"noun", ex:"Safety regulations changed last year.", d:"an official rule", x:"The regulation applies to all drivers.", t:1, c:"law"},
+ {w:"penalty", g:"🚫", ar:"عقوبة / غرامة", p:"noun", ex:"The penalty is a heavy fine.", d:"a punishment for breaking a rule", x:"There is no penalty for early repayment.", t:1, c:"law"},
+ {w:"witness", g:"👁️", ar:"شاهد", p:"noun", ex:"The witness gave a clear account.", d:"someone who saw an event and describes it", x:"Two witnesses were called.", t:1, c:"law"},
+ {w:"offence", g:"⚠️", ar:"مخالفة / جريمة", p:"noun", ex:"Parking here is an offence.", d:"an illegal act", x:"It was his first offence.", t:1, c:"law"},
+ {w:"permit", g:"🎫", ar:"تصريح", p:"noun", ex:"You need a permit to film here.", d:"an official document allowing something", x:"The permit expires in June.", t:1, c:"law"},
+ {w:"enforce", g:"👮", ar:"ينفّذ / يطبّق", p:"verb", ex:"The council enforces the parking rules.", d:"to make people obey a law or rule", x:"The ban was never enforced.", t:1, c:"law"},
+ {w:"liable", g:"📌", ar:"مسؤول قانونيًا", p:"adjective", ex:"The driver is liable for the damage.", d:"legally responsible for something", x:"Guests are liable for breakages.", t:1, c:"law"},
+ {w:"contract", g:"✍️", ar:"عقد", p:"noun", ex:"Read the contract before you sign.", d:"a written legal agreement", x:"The contract runs for two years.", t:1, c:"law"},
+ // ---- geo ----
+ {w:"continent", g:"🗺️", ar:"قارة", p:"noun", ex:"Africa is the second largest continent.", d:"one of the seven large land areas of the earth", x:"The species lives on one continent only.", t:1, c:"geo"},
+ {w:"desert", g:"🏜️", ar:"صحراء", p:"noun", ex:"The desert covers most of the country.", d:"a large dry area with little rain", x:"Few plants grow in the desert.", t:1, c:"geo"},
+ {w:"coastline", g:"🌊", ar:"الساحل", p:"noun", ex:"The coastline stretches for 90 kilometres.", d:"the land along the edge of the sea", x:"Erosion is changing the coastline.", t:1, c:"geo"},
+ {w:"valley", g:"🏞️", ar:"وادٍ", p:"noun", ex:"The valley floods every spring.", d:"low land between hills or mountains", x:"A river runs through the valley.", t:1, c:"geo"},
+ {w:"earthquake", g:"🌋", ar:"زلزال", p:"noun", ex:"The earthquake damaged 200 homes.", d:"a sudden violent shaking of the ground", x:"An earthquake struck at dawn.", t:1, c:"geo"},
+ {w:"flood", g:"🌊", ar:"فيضان", p:"noun", ex:"The flood closed the main road.", d:"a large amount of water covering dry land", x:"Floods are common after heavy rain.", t:1, c:"geo"},
+ {w:"hurricane", g:"🌀", ar:"إعصار", p:"noun", ex:"The hurricane reached the coast at night.", d:"a violent storm with very strong winds", x:"Hurricane damage cost millions.", t:1, c:"geo"},
+ {w:"altitude", g:"⛰️", ar:"الارتفاع", p:"noun", ex:"At this altitude the air is thin.", d:"the height of a place above sea level", x:"The village sits at high altitude.", t:1, c:"geo"},
+ {w:"territory", g:"🚩", ar:"إقليم / أرض", p:"noun", ex:"The bird defends its territory.", d:"land that belongs to a country or animal", x:"The territory was disputed for years.", t:1, c:"geo"},
+ {w:"tropical", g:"🌴", ar:"استوائي", p:"adjective", ex:"Tropical forests hold most species.", d:"from the hottest parts of the world", x:"The island has a tropical climate.", t:1, c:"geo"},
+ // ---- awl ----
+ {w:"consequence", g:"➡️", ar:"نتيجة / عاقبة", p:"noun", ex:"Traffic is a consequence of cheap fuel.", d:"something that happens because of an action", x:"He accepted the consequences.", t:1, c:"awl"},
+ {w:"approach", g:"🧭", ar:"نهج / أسلوب", p:"noun", ex:"We need a different approach.", d:"a way of dealing with something", x:"Her approach to teaching is practical.", t:1, c:"awl"},
+ {w:"establish", g:"🏗️", ar:"يؤسس / يثبت", p:"verb", ex:"The college was established in 1904.", d:"to start something that will last, or to prove a fact", x:"They established the cause of the fire.", t:1, c:"awl"},
+ {w:"maintain", g:"🔧", ar:"يحافظ على / يواصل", p:"verb", ex:"The city maintains its parks well.", d:"to keep something at the same level", x:"She maintained her grades all year.", t:1, c:"awl"},
+ {w:"obtain", g:"🤲", ar:"يحصل على", p:"verb", ex:"You can obtain a form at reception.", d:"to get something, often with effort", x:"Permission must be obtained first.", t:1, c:"awl"},
+ {w:"previous", g:"⬅️", ar:"سابق", p:"adjective", ex:"In the previous chapter, we saw why.", d:"happening before the present one", x:"She left her previous job in May.", t:1, c:"awl"},
+ {w:"furthermore", g:"➕", ar:"علاوة على ذلك", p:"adverb", ex:"Furthermore, the cost keeps rising.", d:"in addition to what has been said", x:"It is slow. Furthermore, it is expensive.", t:1, c:"awl"},
+ {w:"nevertheless", g:"🔄", ar:"ومع ذلك", p:"adverb", ex:"It rained. Nevertheless, we went out.", d:"in spite of what has just been said", x:"Nevertheless, the plan was approved.", t:1, c:"awl"},
+ {w:"whereas", g:"⚖️", ar:"في حين أن", p:"conjunction", ex:"Sales rose in Spain, whereas they fell in Italy.", d:"used to compare two different facts", x:"He walks, whereas she drives.", t:1, c:"awl"},
+ {w:"furthermost", g:"📍", ar:"الأبعد", p:"adjective", ex:"The furthermost island is uninhabited.", d:"the most distant", x:"They reached the furthermost point.", t:1, c:"awl"},
+ {w:"comprehensive", g:"📚", ar:"شامل", p:"adjective", ex:"The report is comprehensive and clear.", d:"including everything that is needed", x:"We need a comprehensive review.", t:1, c:"awl"},
+ {w:"controversial", g:"🔥", ar:"مثير للجدل", p:"adjective", ex:"The decision was highly controversial.", d:"causing strong disagreement", x:"It is a controversial subject in class.", t:1, c:"awl"},
+ {w:"inevitable", g:"⏱️", ar:"حتمي", p:"adjective", ex:"Some delay is inevitable.", d:"certain to happen and impossible to avoid", x:"Change was inevitable after the merger.", t:1, c:"awl"},
+ {w:"substantial", g:"🧱", ar:"كبير / جوهري", p:"adjective", ex:"A substantial number of people agreed.", d:"large in amount or importance", x:"They made substantial progress.", t:1, c:"awl"},
+ {w:"adequate", g:"👌", ar:"كافٍ", p:"adjective", ex:"The lighting is not adequate.", d:"enough for what is needed", x:"Adequate rest is essential.", t:1, c:"awl"},
+ {w:"emphasise", g:"🖍️", ar:"يؤكد على", p:"verb", ex:"She emphasised the need for practice.", d:"to give special importance to something", x:"The report emphasises safety.", t:1, c:"awl"},
+ {w:"estimate", g:"🔢", ar:"يقدّر / تقدير", p:"verb", ex:"They estimate the cost at 40,000.", d:"to guess an amount using what you know", x:"Experts estimate a ten percent rise.", t:1, c:"awl"},
+ {w:"indicate", g:"👉", ar:"يشير إلى", p:"verb", ex:"The graph indicates a slow recovery.", d:"to show that something is true or likely", x:"Results indicate a clear preference.", t:1, c:"awl"},
+ {w:"interpret", g:"🔤", ar:"يفسّر / يترجم", p:"verb", ex:"The data can be interpreted in two ways.", d:"to explain the meaning of something", x:"She interpreted for the visitors.", t:1, c:"awl"},
+ {w:"justify", g:"⚖️", ar:"يبرر", p:"verb", ex:"Nothing can justify the delay.", d:"to give a good reason for something", x:"He justified his choice in detail.", t:1, c:"awl"},
+ {w:"modify", g:"🛠️", ar:"يعدّل", p:"verb", ex:"They modified the design twice.", d:"to change something slightly", x:"The rules were modified last year.", t:1, c:"awl"},
+ {w:"precise", g:"🎯", ar:"دقيق", p:"adjective", ex:"Give the precise time of arrival.", d:"exact and correct in every detail", x:"We need precise measurements.", t:1, c:"awl"},
+ {w:"reluctant", g:"😕", ar:"متردد / كاره", p:"adjective", ex:"He was reluctant to speak in class.", d:"not wanting to do something", x:"Students are reluctant to complain.", t:1, c:"awl"},
+ {w:"sufficient", g:"✔️", ar:"كافٍ", p:"adjective", ex:"There is sufficient evidence to decide.", d:"as much as is needed", x:"Sufficient funding was finally found.", t:1, c:"awl"},
+ {w:"tendency", g:"📊", ar:"ميل / نزعة", p:"noun", ex:"There is a tendency to overspend.", d:"a way of behaving that is usual", x:"Prices show a downward tendency.", t:1, c:"awl"},
+ {w:"widespread", g:"🌐", ar:"واسع الانتشار", p:"adjective", ex:"The habit is widespread among students.", d:"happening in many places or among many people", x:"Damage was widespread after the storm.", t:1, c:"awl"},
+ {w:"alternative", g:"🔀", ar:"بديل", p:"noun", ex:"Is there a cheaper alternative?", d:"something you can choose instead", x:"The alternative route is longer.", t:1, c:"awl"},
+ {w:"apparent", g:"👁️", ar:"واضح / ظاهر", p:"adjective", ex:"The problem soon became apparent.", d:"easy to see or understand", x:"There was no apparent reason.", t:1, c:"awl"},
+ {w:"consistent", g:"📐", ar:"متسق / ثابت", p:"adjective", ex:"Her marks are consistent.", d:"always behaving in the same way", x:"The results are consistent with the theory.", t:1, c:"awl"},
+ {w:"distinguish", g:"🔎", ar:"يميّز بين", p:"verb", ex:"Learn to distinguish fact from opinion.", d:"to see the difference between things", x:"It is hard to distinguish the two.", t:1, c:"awl"},
+ {w:"initiative", g:"🚦", ar:"مبادرة", p:"noun", ex:"The initiative began in 2015.", d:"a new plan to solve a problem", x:"A local initiative cleaned the river.", t:1, c:"awl"},
+ {w:"potential", g:"🌱", ar:"إمكانية / محتمل", p:"noun", ex:"The site has great potential.", d:"the possibility to develop or succeed", x:"She has the potential to lead.", t:1, c:"awl"},
+ {w:"principle", g:"📖", ar:"مبدأ", p:"noun", ex:"The principle is simple enough.", d:"a basic rule or belief", x:"He refused on principle.", t:1, c:"awl"},
+ {w:"circumstances", g:"🧩", ar:"ظروف", p:"noun", ex:"Under these circumstances we must wait.", d:"the facts and conditions of a situation", x:"The circumstances have changed.", t:1, c:"awl"},
+ {w:"occurrence", g:"📆", ar:"حدوث / واقعة", p:"noun", ex:"Flooding is a common occurrence here.", d:"something that happens", x:"The occurrence was never explained.", t:1, c:"awl"},
+ {w:"aware", g:"🧠", ar:"مدرك / واعٍ", p:"adjective", ex:"Few people are aware of the rule.", d:"knowing that something exists", x:"Be aware of the closing time.", t:1, c:"awl"},
+ {w:"despite", g:"🚧", ar:"بالرغم من", p:"preposition", ex:"Despite the rain, the match went on.", d:"without being affected by something", x:"She passed despite missing lessons.", t:1, c:"awl"},
+ {w:"therefore", g:"➡️", ar:"لذلك", p:"adverb", ex:"The bus was late; therefore we walked.", d:"for that reason", x:"It is cheaper and therefore popular.", t:1, c:"awl"},
+ {w:"although", g:"🔁", ar:"بالرغم من أن", p:"conjunction", ex:"Although it was cold, we swam.", d:"in spite of the fact that", x:"Although rare, it does happen.", t:1, c:"awl"}
 
 ];
 
 /* ------------------------------------------------------------------ */
 const $ = id => document.getElementById(id);
 const SKEY = 'ielts-spelling-stats';
+const CKEY = 'ielts-custom-words';
 let stats = {};          // { word: {seen, wrong} }
 let queue = [], idx = 0, cur = null;
 let right = 0, asked = 0, streak = 0, best = 0;
 let firstTry = true, tries = 0, answered = false, missed = [], lastDeck = 'all';
 let voice = null, unlocked = false, customPool = [], libFilter = 'all', libTopic = 'all', backTo = 's-start';
 
+/* ---------- الكلمات المستوردة ---------- */
+function loadCustom(){
+  let arr = [];
+  try{ arr = JSON.parse(localStorage.getItem(CKEY) || '[]'); }catch(e){ arr = []; }
+  if(!Array.isArray(arr)) arr = [];
+  const have = new Set(WORDS.map(o=>o.w.toLowerCase()));
+  arr.forEach(o=>{
+    if(!o || !o.w || have.has(o.w.toLowerCase())) return;
+    have.add(o.w.toLowerCase());
+    WORDS.push({w:o.w, g:o.g||'📥', ar:o.ar||'', p:o.p||'', d:o.d||'', ex:o.ex||'', x:o.x||'', t:1, c:'custom'});
+  });
+  return arr;
+}
+function saveCustom(arr){ try{ localStorage.setItem(CKEY, JSON.stringify(arr)); }catch(e){} }
+function customCount(){ return WORDS.filter(o=>o.c==='custom').length; }
+
+function parseImport(text){
+  const out = [], bad = [];
+  text.split(/\r?\n/).forEach(line=>{
+    const t = line.trim();
+    if(!t || t.startsWith('#')) return;
+    const parts = t.split(/\t|\s*\|\s*|\s*=\s*/).map(s=>s.trim()).filter((s,i)=> i===0 ? s : true);
+    const w = (parts[0]||'').replace(/^["'\-\d.\s)]+/,'').trim();
+    if(!w || !/^[A-Za-z][A-Za-z .'-]*$/.test(w)){ if(t) bad.push(t.slice(0,24)); return; }
+    out.push({w:w, ar:parts[1]||'', d:parts[2]||'', ex:parts[3]||''});
+  });
+  return {out, bad};
+}
 /* ---------- storage ---------- */
 async function loadStats(){
   stats = {};
@@ -580,6 +767,7 @@ async function loadStats(){
   });
   renderCounts();
 }
+function renderCustomCount(){ const n = customCount(); $('n-custom').textContent = n; $('imp-have').textContent = n + ' مستوردة'; }
 async function saveStats(){
   Object.keys(stats).forEach(k=>{ const e=stats[k]; if(!e.r && !e.w && !e.b) delete stats[k]; });
   const s = JSON.stringify(stats);
@@ -604,6 +792,7 @@ function renderCounts(){
   $('n-all').textContent      = WORDS.length;
   $('n-weak').textContent     = weakWords().length;
   $('n-book').textContent     = bookWords().length;
+  renderCustomCount();
 }
 function weakWords(){ return WORDS.filter(w => g(w.w).w > 0); }
 function bookWords(){ return WORDS.filter(w => g(w.w).b); }
@@ -675,7 +864,7 @@ function startDeck(deck, custom){
   next();
 }
 function show(id){
-  ['s-start','s-drill','s-lib','s-done'].forEach(s=>$(s).classList.toggle('on', s===id));
+  ['s-start','s-drill','s-lib','s-imp','s-done'].forEach(s=>$(s).classList.toggle('on', s===id));
   window.scrollTo(0,0);
 }
 function next(){
@@ -684,8 +873,8 @@ function next(){
   answered = false; firstTry = true; tries = 0;
   $('glyph').textContent = cur.g;
   $('glyph').classList.remove('pop'); void $('glyph').offsetWidth; $('glyph').classList.add('pop');
-  $('meaning').textContent = cur.ar;
-  $('pos').textContent = cur.p;
+  $('meaning').textContent = cur.ar || cur.d || '🎧 اسمع واكتب';
+  $('pos').textContent = cur.p || '';
   $('verdict').innerHTML = '';
   $('answer').value = '';
   $('answer').disabled = false;
@@ -783,7 +972,7 @@ function renderVerdict(ok, pairs, dist, revealed){
         '<span class="lbl">أنت كتبت</span><div class="lrow">'+ (userRow || '<span class="cell gap">·</span>') +'</div>' +
         (showTarget ? '<span class="lbl" style="margin-top:6px">الصح</span><div class="lrow">'+targRow+'</div>' : '') +
       '</div>' +
-      (showTarget ? '<div class="def">'+ cur.w +' — '+ cur.d +'</div>' + sentences(cur) : '') +
+      (showTarget ? '<div class="def">'+ cur.w + (cur.d ? ' — '+cur.d : '') +'</div>' + sentences(cur) : '') +
     '</div>';
   if(showTarget) setTimeout(()=>say(cur.w, .7), 300);
 }
@@ -812,12 +1001,12 @@ function finish(){
 
 /* ---------- library ---------- */
 function hl(s, w){ return s.replace(new RegExp('('+w+')','i'), '<b>$1</b>'); }
-function sentences(o){ return '<p class="sent">'+hl(o.ex,o.w)+'</p><p class="sent">'+hl(o.x,o.w)+'</p>'; }
+function sentences(o){ return [o.ex,o.x].filter(Boolean).map(s=>'<p class="sent">'+hl(s,o.w)+'</p>').join(''); }
 
 const TOPICS = [
   ['all','الكل'],['mine','📓 دفترك'],['edu','🎓 تعليم'],['work','💼 شغل'],['env','🌍 بيئة'],
   ['health','🩺 صحة'],['tech','💻 تكنولوجيا'],['travel','✈️ سفر'],['society','👥 مجتمع'],
-  ['sci','🔬 علوم'],['money','💰 فلوس'],['trend','📈 وصف الرسوم'],['daily','🧺 حياة يومية'],['general','✳️ عام']
+  ['sci','🔬 علوم'],['money','💰 فلوس'],['trend','📈 وصف الرسوم'],['daily','🧺 حياة يومية'],['general','✳️ عام'],['awl','🧠 أكاديمي عام'],['art','🎨 فن وعمارة'],['sport','⚽ رياضة'],['media','📰 إعلام'],['food','🍽️ أكل'],['home','🏠 سكن'],['law','⚖️ قانون'],['geo','🗺️ جغرافيا وطقس'],['custom','📥 اللي ضفتها']
 ];
 function renderTopics(){
   $('topic-tabs').innerHTML = TOPICS.map(([k,l])=>{
@@ -864,12 +1053,12 @@ function renderLib(){
     return '<div class="wrow" data-w="'+o.w+'">' +
       '<div class="whead">' +
         '<span class="rg">'+o.g+'</span>' +
-        '<span class="rt"><span class="wd">'+o.w+'</span><span class="ar">'+o.ar+'</span></span>' +
+        '<span class="rt"><span class="wd">'+o.w+'</span><span class="ar">'+(o.ar||o.d||'')+'</span></span>' +
         '<span class="tally">'+tal+'</span>' +
         '<button class="bk'+(e.b?' on':'')+'" data-bk="'+o.w+'">🔖</button>' +
       '</div>' +
       '<div class="wdet">' +
-        '<div class="def">'+o.d+'</div>' + sentences(o) +
+        (o.d ? '<div class="def">'+o.d+'</div>' : '') + sentences(o) +
         '<div class="dact">' +
           '<button data-say="'+o.w+'">🔊 اسمعها</button>' +
           '<button data-one="'+o.w+'">✍️ اتمرن عليها</button>' +
@@ -884,6 +1073,55 @@ $('topic-tabs').addEventListener('click', e=>{
   $('topic-tabs').scrollLeft = t.offsetLeft - 60;
 });
 
+$('go-imp').addEventListener('click', ()=>{ renderCustomCount(); $('imp-out').innerHTML=''; show('s-imp'); });
+$('imp-back').addEventListener('click', ()=>{ renderCounts(); show('s-start'); });
+$('imp-add').addEventListener('click', ()=>{
+  const {out, bad} = parseImport($('imp-text').value);
+  const stored = loadCustom();
+  const have = new Set(WORDS.map(o=>o.w.toLowerCase()));
+  let added = 0, dup = 0;
+  out.forEach(o=>{
+    if(have.has(o.w.toLowerCase())){ dup++; return; }
+    have.add(o.w.toLowerCase());
+    stored.push(o);
+    WORDS.push({w:o.w, g:'📥', ar:o.ar, p:'', d:o.d, ex:o.ex, x:'', t:1, c:'custom'});
+    added++;
+  });
+  saveCustom(stored); renderCounts();
+  $('imp-out').innerHTML = '<div class="rslt'+(added?'':' bad')+'">' +
+    (added ? '✅ اتضافت <b>'+added+'</b> كلمة — إجمالي التطبيق دلوقتي <b>'+WORDS.length+'</b> كلمة' : '⚠️ مفيش كلمة جديدة اتضافت') +
+    (dup ? '<br>🔁 '+dup+' كلمة كانت موجودة قبل كده' : '') +
+    (bad.length ? '<br>❌ '+bad.length+' سطر متقروش (لازم يبدأ بكلمة إنجليزي)' : '') + '</div>';
+  if(added) $('imp-text').value = '';
+});
+$('imp-export').addEventListener('click', ()=>{
+  const data = {v:1, date:new Date().toISOString().slice(0,10), custom:loadCustom(), stats:stats};
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(data)], {type:'application/json'}));
+  a.download = 'spelling-backup.json'; a.click();
+});
+$('imp-restore').addEventListener('click', ()=> $('imp-file').click());
+$('imp-file').addEventListener('change', e=>{
+  const f = e.target.files[0]; if(!f) return;
+  const r = new FileReader();
+  r.onload = ()=>{
+    try{
+      const d = JSON.parse(r.result);
+      if(d.stats) { stats = d.stats; saveStats(); }
+      if(Array.isArray(d.custom)){ saveCustom(d.custom); loadCustom(); }
+      renderCounts();
+      $('imp-out').innerHTML = '<div class="rslt">✅ اترجعت النسخة — التطبيق فيه دلوقتي <b>'+WORDS.length+'</b> كلمة</div>';
+    }catch(err){ $('imp-out').innerHTML = '<div class="rslt bad">❌ الملف مش مقروء — اتأكد إنه ملف النسخة الاحتياطية</div>'; }
+  };
+  r.readAsText(f); e.target.value = '';
+});
+$('imp-clear').addEventListener('click', ()=>{
+  if(!customCount()) { $('imp-out').innerHTML = '<div class="rslt bad">مفيش كلمات مستوردة أصلًا</div>'; return; }
+  if(!confirm('هتمسح كل الكلمات اللي ضفتها بنفسك. الكلمات الأصلية وسجلك مش هيتأثروا. تكمل؟')) return;
+  saveCustom([]);
+  for(let i=WORDS.length-1;i>=0;i--) if(WORDS[i].c==='custom') WORDS.splice(i,1);
+  renderCounts(); $('imp-out').innerHTML = '<div class="rslt">🗑️ اتمسحت الكلمات المستوردة</div>';
+});
 $('go-lib').addEventListener('click', ()=>{ backTo='s-start'; openLib(); });
 function goBack(){ renderCounts(); if(backTo==='s-lib') renderLib(); show(backTo); }
 $('lib-back').addEventListener('click', ()=>{ renderCounts(); show('s-start'); });
@@ -963,6 +1201,7 @@ if('serviceWorker' in navigator && location.protocol === 'https:'){
   navigator.serviceWorker.register('./sw.js').catch(()=>{});
 }
 
+loadCustom();
 loadStats();
 </script>
 </body>
