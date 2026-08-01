@@ -154,6 +154,8 @@
   .tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:10px}
   .tab{flex:0 0 auto;border:1px solid var(--line);background:var(--card);color:var(--muted);border-radius:999px;padding:8px 13px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer}
   .tab.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  #topic-tabs .tab{font-size:12.5px;padding:7px 12px}
+  #topic-tabs .tab.on{background:var(--primary);border-color:var(--primary)}
   .peek{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted);margin-bottom:12px;cursor:pointer;user-select:none}
   .peek input{width:16px;height:16px;accent-color:var(--primary)}
   .wrow{background:var(--card);border:1px solid var(--line);border-radius:14px;margin-bottom:8px;overflow:hidden}
@@ -177,7 +179,8 @@
   .sent b{background:var(--amber);border-radius:3px;padding:0 3px}
   .dact{display:flex;gap:8px;margin-top:12px}
   .dact button{flex:1;border:1px solid var(--line);background:#fff;border-radius:10px;padding:9px;font-family:inherit;font-size:13px;font-weight:600;color:var(--ink);cursor:pointer}
-  .empty{text-align:center;color:var(--muted);font-size:13.5px;padding:30px 10px;line-height:1.8}
+  .empty{text-align:center;color:var(--ink);font-size:15px;font-weight:600;padding:38px 16px;line-height:1.9;background:var(--card);border:1px dashed var(--line);border-radius:14px}
+  .empty span{display:block;margin-top:6px;font-size:13px;font-weight:400;color:var(--muted);line-height:1.8}
   .bkcard{position:absolute;left:12px;top:12px;background:none;border:0;font-size:20px;padding:4px;cursor:pointer;opacity:.28;filter:grayscale(1)}
   .bkcard.on{opacity:1;filter:none}
   @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
@@ -199,7 +202,7 @@
     </button>
     <button class="deck" data-deck="traps">
       <span class="ic">🎧</span>
-      <span class="t"><b>فخاخ الـ Listening</b><span>كلمات بتتكرر في الامتحان وإملاؤها صعب</span></span>
+      <span class="t"><b>كلمات الامتحان</b><span>فخاخ الإملاء + كلمات أكاديمية بكل المواضيع</span></span>
       <span class="n" id="n-traps"></span>
     </button>
     <button class="deck" data-deck="all">
@@ -219,7 +222,7 @@
     </button>
     <button class="deck" id="go-lib" style="border-color:var(--primary);border-width:1.5px">
       <span class="ic" style="background:var(--ink);color:#fff">📚</span>
-      <span class="t"><b>كل الكلمات</b><span>القائمة كاملة بالمعنى والجمل وسجلك في كل كلمة</span></span>
+      <span class="t"><b>كل الكلمات</b><span>مقسّمة بالمواضيع، بالمعنى والجمل وسجلك في كل كلمة</span></span>
       <span class="n">›</span>
     </button>
 
@@ -278,6 +281,7 @@
       <button class="tab" data-f="new">✨ لسه ماجربتهاش</button>
       <button class="tab" data-f="done">✅ مظبوطة</button>
     </div>
+    <div class="tabs" id="topic-tabs"></div>
     <label class="peek"><input type="checkbox" id="lib-blur"> غطّي الإملاء — دوس على الكلمة عشان تكشفها</label>
     <div id="lib-list"></div>
     <div class="row" style="margin:14px 0 4px"><button class="act" id="lib-drill">درّب على المعروض</button></div>
@@ -311,89 +315,241 @@
 ------------------------------------------------------------------ */
 const WORDS = [
  // ---- notebook ----
- {w:"convenient",   g:"🕒", ar:"مريح / مناسب",        p:"adjective", ex:"The hotel is in a convenient location.", d:"easy to use, or suitable for what you need", x:"Is Monday morning convenient for you?"},
- {w:"suffer",       g:"😣", ar:"يعاني",               p:"verb",      ex:"Many students suffer from exam stress.", d:"to experience something painful or unpleasant", x:"The city suffered heavy damage in the storm."},
- {w:"mandatory",    g:"⚖️", ar:"إجباري",              p:"adjective", ex:"Attendance at the lecture is mandatory.", d:"required by a rule or a law", x:"Wearing a helmet is mandatory on the site."},
- {w:"optimistic",   g:"🌤️", ar:"متفائل",             p:"adjective", ex:"She feels optimistic about the results.", d:"expecting good things to happen", x:"He is optimistic that prices will fall."},
- {w:"energetic",    g:"⚡", ar:"نشيط / مفعم بالطاقة",  p:"adjective", ex:"The children were very energetic today.", d:"full of energy and very active", x:"An energetic teacher keeps the class awake."},
- {w:"imaginary",    g:"🦄", ar:"خيالي / وهمي",        p:"adjective", ex:"The story is set in an imaginary city.", d:"existing only in the mind; not real", x:"Children often invent imaginary friends."},
- {w:"permanent",    g:"🧱", ar:"دائم",                p:"adjective", ex:"He was offered a permanent contract.", d:"lasting for a long time; not temporary", x:"The damage to the wall is permanent."},
- {w:"confident",    g:"💪", ar:"واثق",                p:"adjective", ex:"I feel confident about the speaking test.", d:"sure that you can do something well", x:"Be confident when you enter the room."},
- {w:"flexible",     g:"🤸", ar:"مرن",                 p:"adjective", ex:"The course has flexible study hours.", d:"able to change easily to suit new conditions", x:"We need a flexible timetable this term."},
- {w:"knowledgeable",g:"🧠", ar:"واسع المعرفة",        p:"adjective", ex:"The guide was very knowledgeable.", d:"knowing a lot about a particular subject", x:"Ask Sara, she is knowledgeable about visas."},
- {w:"comfortable",  g:"🛋️", ar:"مريح",               p:"adjective", ex:"The seats were clean and comfortable.", d:"pleasant to wear, sit in, or live in", x:"Wear comfortable shoes for the tour."},
- {w:"exciting",     g:"🎢", ar:"مثير / ممتع",         p:"adjective", ex:"The trip sounds really exciting.", d:"making you feel interested and eager", x:"It was an exciting match to watch."},
- {w:"accommodation",g:"🏨", ar:"سكن / إقامة",         p:"noun",      ex:"Student accommodation costs 400 a month.", d:"a place where you live or stay", x:"The fee does not include accommodation."},
- {w:"questionnaire",g:"📋", ar:"استبيان",             p:"noun",      ex:"Please complete the questionnaire online.", d:"a set of written questions used to collect information", x:"We sent the questionnaire to 200 people."},
- {w:"facilities",   g:"🏗️", ar:"مرافق / تسهيلات",    p:"noun",      ex:"The sports facilities open at seven.", d:"buildings or equipment provided for people to use", x:"The hotel has excellent facilities."},
- {w:"commencement", g:"🎓", ar:"بداية / بدء",         p:"noun",      ex:"The commencement of the course is in May.", d:"the beginning of something (formal)", x:"Fees are paid before the commencement of classes."},
- {w:"intermediate", g:"📶", ar:"متوسط المستوى",       p:"adjective", ex:"He joined the intermediate class.", d:"at a level between beginner and advanced", x:"You should move up to the intermediate class."},
- {w:"evaluation",   g:"📊", ar:"تقييم",               p:"noun",      ex:"A written evaluation is due on Friday.", d:"the act of judging how good or useful something is", x:"Please fill in the course evaluation form."},
- {w:"assessment",   g:"📝", ar:"تقييم / تقدير",       p:"noun",      ex:"The final assessment is worth 40%.", d:"a judgement about someone's work or a situation", x:"Assessment is by essay, not by exam."},
- {w:"discussion",   g:"💬", ar:"مناقشة",              p:"noun",      ex:"We had a long discussion about it.", d:"a conversation in which people exchange ideas", x:"The discussion lasted almost an hour."},
- {w:"reference",    g:"🔖", ar:"مرجع",                p:"noun",      ex:"You need a reference from your tutor.", d:"a letter about your character or work; a source you mention", x:"List every reference at the end of the essay."},
- {w:"vehicle",      g:"🚗", ar:"مركبة",               p:"noun",      ex:"Leave your vehicle in car park B.", d:"a machine such as a car or bus that carries people", x:"No vehicle may enter the park."},
+ {w:"convenient",   g:"🕒", ar:"مريح / مناسب",        p:"adjective", ex:"The hotel is in a convenient location.", d:"easy to use, or suitable for what you need", x:"Is Monday morning convenient for you?", c:"mine"},
+ {w:"suffer",       g:"😣", ar:"يعاني",               p:"verb",      ex:"Many students suffer from exam stress.", d:"to experience something painful or unpleasant", x:"The city suffered heavy damage in the storm.", c:"mine"},
+ {w:"mandatory",    g:"⚖️", ar:"إجباري",              p:"adjective", ex:"Attendance at the lecture is mandatory.", d:"required by a rule or a law", x:"Wearing a helmet is mandatory on the site.", c:"mine"},
+ {w:"optimistic",   g:"🌤️", ar:"متفائل",             p:"adjective", ex:"She feels optimistic about the results.", d:"expecting good things to happen", x:"He is optimistic that prices will fall.", c:"mine"},
+ {w:"energetic",    g:"⚡", ar:"نشيط / مفعم بالطاقة",  p:"adjective", ex:"The children were very energetic today.", d:"full of energy and very active", x:"An energetic teacher keeps the class awake.", c:"mine"},
+ {w:"imaginary",    g:"🦄", ar:"خيالي / وهمي",        p:"adjective", ex:"The story is set in an imaginary city.", d:"existing only in the mind; not real", x:"Children often invent imaginary friends.", c:"mine"},
+ {w:"permanent",    g:"🧱", ar:"دائم",                p:"adjective", ex:"He was offered a permanent contract.", d:"lasting for a long time; not temporary", x:"The damage to the wall is permanent.", c:"mine"},
+ {w:"confident",    g:"💪", ar:"واثق",                p:"adjective", ex:"I feel confident about the speaking test.", d:"sure that you can do something well", x:"Be confident when you enter the room.", c:"mine"},
+ {w:"flexible",     g:"🤸", ar:"مرن",                 p:"adjective", ex:"The course has flexible study hours.", d:"able to change easily to suit new conditions", x:"We need a flexible timetable this term.", c:"mine"},
+ {w:"knowledgeable",g:"🧠", ar:"واسع المعرفة",        p:"adjective", ex:"The guide was very knowledgeable.", d:"knowing a lot about a particular subject", x:"Ask Sara, she is knowledgeable about visas.", c:"mine"},
+ {w:"comfortable",  g:"🛋️", ar:"مريح",               p:"adjective", ex:"The seats were clean and comfortable.", d:"pleasant to wear, sit in, or live in", x:"Wear comfortable shoes for the tour.", c:"mine"},
+ {w:"exciting",     g:"🎢", ar:"مثير / ممتع",         p:"adjective", ex:"The trip sounds really exciting.", d:"making you feel interested and eager", x:"It was an exciting match to watch.", c:"mine"},
+ {w:"accommodation",g:"🏨", ar:"سكن / إقامة",         p:"noun",      ex:"Student accommodation costs 400 a month.", d:"a place where you live or stay", x:"The fee does not include accommodation.", c:"mine"},
+ {w:"questionnaire",g:"📋", ar:"استبيان",             p:"noun",      ex:"Please complete the questionnaire online.", d:"a set of written questions used to collect information", x:"We sent the questionnaire to 200 people.", c:"mine"},
+ {w:"facilities",   g:"🏗️", ar:"مرافق / تسهيلات",    p:"noun",      ex:"The sports facilities open at seven.", d:"buildings or equipment provided for people to use", x:"The hotel has excellent facilities.", c:"mine"},
+ {w:"commencement", g:"🎓", ar:"بداية / بدء",         p:"noun",      ex:"The commencement of the course is in May.", d:"the beginning of something (formal)", x:"Fees are paid before the commencement of classes.", c:"mine"},
+ {w:"intermediate", g:"📶", ar:"متوسط المستوى",       p:"adjective", ex:"He joined the intermediate class.", d:"at a level between beginner and advanced", x:"You should move up to the intermediate class.", c:"mine"},
+ {w:"evaluation",   g:"📊", ar:"تقييم",               p:"noun",      ex:"A written evaluation is due on Friday.", d:"the act of judging how good or useful something is", x:"Please fill in the course evaluation form.", c:"mine"},
+ {w:"assessment",   g:"📝", ar:"تقييم / تقدير",       p:"noun",      ex:"The final assessment is worth 40%.", d:"a judgement about someone's work or a situation", x:"Assessment is by essay, not by exam.", c:"mine"},
+ {w:"discussion",   g:"💬", ar:"مناقشة",              p:"noun",      ex:"We had a long discussion about it.", d:"a conversation in which people exchange ideas", x:"The discussion lasted almost an hour.", c:"mine"},
+ {w:"reference",    g:"🔖", ar:"مرجع",                p:"noun",      ex:"You need a reference from your tutor.", d:"a letter about your character or work; a source you mention", x:"List every reference at the end of the essay.", c:"mine"},
+ {w:"vehicle",      g:"🚗", ar:"مركبة",               p:"noun",      ex:"Leave your vehicle in car park B.", d:"a machine such as a car or bus that carries people", x:"No vehicle may enter the park.", c:"mine"},
  // ---- traps ----
- {w:"receipt",      g:"🧾", ar:"إيصال",               p:"noun",      ex:"Keep your receipt as proof of payment.", t:1, d:"a piece of paper showing that you have paid", x:"The shop will not refund you without a receipt."},
- {w:"restaurant",   g:"🍽️", ar:"مطعم",               p:"noun",      ex:"The restaurant is next to the library.", t:1, d:"a place where you buy and eat a meal", x:"We booked a table at an Italian restaurant."},
- {w:"library",      g:"📚", ar:"مكتبة",               p:"noun",      ex:"The library closes at nine on Fridays.", t:1, d:"a place where books are kept and borrowed", x:"Return the books to the library by Friday."},
- {w:"jewellery",    g:"💍", ar:"مجوهرات",             p:"noun",      ex:"Do not leave jewellery in your room.", t:1, d:"objects such as rings and necklaces that you wear", x:"She keeps her jewellery in a small box."},
- {w:"laboratory",   g:"🔬", ar:"معمل",                p:"noun",      ex:"The laboratory is on the second floor.", t:1, d:"a room used for scientific work", x:"Never eat inside the laboratory."},
- {w:"temperature",  g:"🌡️", ar:"درجة الحرارة",       p:"noun",      ex:"The temperature drops at night.", t:1, d:"how hot or cold something is", x:"Record the temperature every hour."},
- {w:"environment",  g:"🌍", ar:"بيئة",                p:"noun",      ex:"The project protects the environment.", t:1, d:"the natural world around us", x:"Plastic waste harms the environment."},
- {w:"equipment",    g:"🧰", ar:"معدات",               p:"noun",      ex:"All the equipment is provided free.", t:1, d:"the tools or machines needed for an activity", x:"Bring your own camping equipment."},
- {w:"appointment",  g:"📅", ar:"موعد",                p:"noun",      ex:"I booked an appointment for Tuesday.", t:1, d:"an arrangement to meet someone at a set time", x:"I missed my dentist appointment."},
- {w:"cathedral",    g:"⛪", ar:"كاتدرائية",           p:"noun",      ex:"The tour starts at the cathedral.", t:1, d:"a very large and important church", x:"The cathedral was built in 1220."},
- {w:"museum",       g:"🏛️", ar:"متحف",               p:"noun",      ex:"Entry to the museum is free.", t:1, d:"a building where interesting objects are displayed", x:"The museum has a new Egyptian gallery."},
- {w:"government",   g:"🏢", ar:"حكومة",               p:"noun",      ex:"The government funds the programme.", t:1, d:"the group of people who control a country", x:"The government raised the tax on fuel."},
- {w:"immediately",  g:"⏱️", ar:"فورًا",              p:"adverb",    ex:"Report any damage immediately.", t:1, d:"at once, without any delay", x:"Call the office immediately if you are ill."},
- {w:"definitely",   g:"✅", ar:"بالتأكيد",            p:"adverb",    ex:"I will definitely be there.", t:1, d:"without any doubt", x:"That is definitely the wrong platform."},
- {w:"separate",     g:"✂️", ar:"منفصل",              p:"adjective", ex:"Use a separate sheet for notes.", t:1, d:"not joined to something else; kept apart", x:"Men and women use separate entrances."},
- {w:"recommend",    g:"👍", ar:"يوصي / ينصح بـ",      p:"verb",      ex:"I recommend the morning session.", t:1, d:"to say that something is good and worth trying", x:"Which book do you recommend for reading?"},
- {w:"address",      g:"🏠", ar:"عنوان",               p:"noun",      ex:"Write your address in block capitals.", t:1, d:"the details of where someone lives or works", x:"They posted the letter to my old address."},
- {w:"business",     g:"💼", ar:"عمل / تجارة",         p:"noun",      ex:"She studies business management.", t:1, d:"the activity of buying and selling; a company", x:"He runs a small family business."},
- {w:"calendar",     g:"🗓️", ar:"تقويم / نتيجة",      p:"noun",      ex:"The dates are on the calendar.", t:1, d:"a chart showing the days and months of a year", x:"Mark the exam date on your calendar."},
- {w:"colleague",    g:"👔", ar:"زميل عمل",            p:"noun",      ex:"Ask a colleague to check the form.", t:1, d:"a person you work with", x:"My colleague will cover the shift."},
- {w:"committee",    g:"🗳️", ar:"لجنة",               p:"noun",      ex:"The committee meets every month.", t:1, d:"a group of people chosen to make decisions", x:"The committee approved the new plan."},
- {w:"foreign",      g:"🌐", ar:"أجنبي",               p:"adjective", ex:"He speaks three foreign languages.", t:1, d:"belonging to a country that is not your own", x:"The bank changes foreign currency."},
- {w:"maintenance",  g:"🔧", ar:"صيانة",               p:"noun",      ex:"Maintenance work starts on Monday.", t:1, d:"the work of keeping something in good condition", x:"The lift is closed for maintenance."},
- {w:"opportunity",  g:"🚪", ar:"فرصة",                p:"noun",      ex:"It is a great opportunity to travel.", t:1, d:"a chance to do something you want to do", x:"Do not miss this opportunity."},
- {w:"receive",      g:"📥", ar:"يستلم",               p:"verb",      ex:"You will receive an email tomorrow.", t:1, d:"to get something that is sent or given to you", x:"Did you receive my message?"},
- {w:"schedule",     g:"📆", ar:"جدول زمني",           p:"noun",      ex:"Check the schedule before you come.", t:1, d:"a plan showing the times of events", x:"The schedule is on the noticeboard."},
- {w:"successful",   g:"🏆", ar:"ناجح",                p:"adjective", ex:"The campaign was very successful.", t:1, d:"achieving what you wanted to achieve", x:"The trial was successful."},
- {w:"beginning",    g:"🚦", ar:"بداية",               p:"noun",      ex:"Pay the fee at the beginning of term.", t:1, d:"the first part of something", x:"Read the beginning of chapter two."},
- {w:"achieve",      g:"🎯", ar:"يحقق / ينجز",         p:"verb",      ex:"She wants to achieve band seven.", t:1, d:"to succeed in doing something after effort", x:"You can achieve a lot in six weeks."},
- {w:"brochure",     g:"📔", ar:"كتيب دعائي",          p:"noun",      ex:"The brochure lists all the prices.", t:1, d:"a small book with pictures and information", x:"Take a brochure from the desk."},
- {w:"budget",       g:"💰", ar:"ميزانية",             p:"noun",      ex:"The budget covers travel and food.", t:1, d:"the amount of money available for something", x:"The trip is outside my budget."},
- {w:"campus",       g:"🏫", ar:"حرم جامعي",           p:"noun",      ex:"The main campus is outside the city.", t:1, d:"the land and buildings of a university", x:"There are three cafes on campus."},
- {w:"certificate",  g:"📜", ar:"شهادة",               p:"noun",      ex:"You get a certificate at the end.", t:1, d:"an official document that proves something", x:"Bring your birth certificate."},
- {w:"conference",   g:"🎤", ar:"مؤتمر",               p:"noun",      ex:"The conference lasts three days.", t:1, d:"a large formal meeting about a subject", x:"She spoke at a medical conference."},
- {w:"deposit",      g:"💵", ar:"عربون / وديعة",       p:"noun",      ex:"Pay a deposit of fifty pounds.", t:1, d:"money paid in advance as security", x:"The deposit is returned at the end."},
- {w:"efficient",    g:"⚙️", ar:"كفء / فعّال",        p:"adjective", ex:"The new system is more efficient.", t:1, d:"working well without wasting time or energy", x:"Email is an efficient way to reply."},
- {w:"exhibition",   g:"🖼️", ar:"معرض",               p:"noun",      ex:"The exhibition opens next weekend.", t:1, d:"a public show of art or interesting objects", x:"The photography exhibition ends on Sunday."},
- {w:"February",     g:"❄️", ar:"فبراير",             p:"noun",      ex:"The course begins in February.", t:1, d:"the second month of the year", x:"Term starts on the fifth of February."},
- {w:"guarantee",    g:"🛡️", ar:"ضمان",               p:"noun",      ex:"The laptop has a two year guarantee.", t:1, d:"a promise to repair or replace a product", x:"The guarantee covers parts and labour."},
- {w:"insurance",    g:"📑", ar:"تأمين",               p:"noun",      ex:"Travel insurance is strongly advised.", t:1, d:"an agreement that pays you if something goes wrong", x:"Health insurance is included in the fee."},
- {w:"itinerary",    g:"🗺️", ar:"خط سير الرحلة",      p:"noun",      ex:"The itinerary includes two museums.", t:1, d:"a plan of a journey, with places and times", x:"The guide handed out the itinerary."},
- {w:"luggage",      g:"🧳", ar:"حقائب السفر",         p:"noun",      ex:"Leave your luggage at reception.", t:1, d:"the bags you take with you when you travel", x:"Excess luggage costs extra."},
- {w:"membership",   g:"🎫", ar:"عضوية",               p:"noun",      ex:"Membership costs twenty pounds a year.", t:1, d:"the state of belonging to a club or group", x:"Membership includes free classes."},
- {w:"passenger",    g:"🚌", ar:"راكب",                p:"noun",      ex:"Each passenger needs a valid ticket.", t:1, d:"someone travelling in a vehicle but not driving", x:"The bus carries fifty passengers."},
- {w:"pharmacy",     g:"💊", ar:"صيدلية",              p:"noun",      ex:"The pharmacy is opposite the bank.", t:1, d:"a shop where medicines are sold", x:"The pharmacy stays open until midnight."},
- {w:"psychology",   g:"🧩", ar:"علم النفس",           p:"noun",      ex:"He is studying psychology at Leeds.", t:1, d:"the study of the mind and behaviour", x:"She has a degree in psychology."},
- {w:"receptionist", g:"🛎️", ar:"موظف استقبال",       p:"noun",      ex:"Give your name to the receptionist.", t:1, d:"someone who greets visitors at a desk", x:"The receptionist will keep your bag."},
- {w:"souvenir",     g:"🎁", ar:"تذكار",               p:"noun",      ex:"The shop sells souvenirs and maps.", t:1, d:"an object you keep to remember a place", x:"I bought a souvenir from the market."},
- {w:"stadium",      g:"🏟️", ar:"استاد",              p:"noun",      ex:"The stadium holds sixty thousand people.", t:1, d:"a large sports ground with seats around it", x:"The new stadium opens in March."},
- {w:"statistics",   g:"📈", ar:"إحصاءات",             p:"noun",      ex:"The statistics show a clear rise.", t:1, d:"numbers that give information about something", x:"The statistics come from a 2019 survey."},
- {w:"supermarket",  g:"🛒", ar:"سوبر ماركت",          p:"noun",      ex:"There is a supermarket on campus.", t:1, d:"a large shop selling food and household goods", x:"The supermarket delivers on Sundays."},
- {w:"surgery",      g:"🏥", ar:"عيادة / جراحة",       p:"noun",      ex:"The doctor's surgery opens at eight.", t:1, d:"a place where you see a doctor; a medical operation", x:"Book the surgery appointment early."},
- {w:"timetable",    g:"⏰", ar:"جدول مواعيد",         p:"noun",      ex:"The bus timetable changes in June.", t:1, d:"a list of times when buses, trains or classes run", x:"The new timetable starts next week."},
- {w:"vegetarian",   g:"🥗", ar:"نباتي",               p:"adjective", ex:"A vegetarian option is available.", t:1, d:"someone who does not eat meat", x:"Two vegetarian meals are included."},
- {w:"warehouse",    g:"📦", ar:"مخزن",                p:"noun",      ex:"The goods are kept in a warehouse.", t:1, d:"a large building used for storing goods", x:"The books are shipped from a warehouse."},
- {w:"Wednesday",    g:"📅", ar:"الأربعاء",            p:"noun",      ex:"The class is on Wednesday evening.", t:1, d:"the day between Tuesday and Thursday", x:"The library is closed on Wednesday."},
- {w:"aluminium",    g:"🥫", ar:"ألومنيوم",            p:"noun",      ex:"The frame is made of aluminium.", t:1, d:"a light silver-coloured metal", x:"Aluminium cans are easy to recycle."},
- {w:"physiotherapy",g:"🦵", ar:"علاج طبيعي",          p:"noun",      ex:"She needs physiotherapy twice a week.", t:1, d:"treatment for injuries using exercise and massage", x:"He had physiotherapy after the accident."},
- {w:"laundry",      g:"🧺", ar:"غسيل / مغسلة",        p:"noun",      ex:"The laundry room is in the basement.", t:1, d:"clothes that need washing; a place to wash them", x:"There is a laundry on the ground floor."},
- {w:"neighbourhood",g:"🏘️", ar:"حي / منطقة سكنية",   p:"noun",      ex:"It is a quiet neighbourhood.", t:1, d:"the area around where you live", x:"The neighbourhood has a weekly market."}
+ {w:"receipt",      g:"🧾", ar:"إيصال",               p:"noun",      ex:"Keep your receipt as proof of payment.", t:1, d:"a piece of paper showing that you have paid", x:"The shop will not refund you without a receipt.", c:"money"},
+ {w:"restaurant",   g:"🍽️", ar:"مطعم",               p:"noun",      ex:"The restaurant is next to the library.", t:1, d:"a place where you buy and eat a meal", x:"We booked a table at an Italian restaurant.", c:"daily"},
+ {w:"library",      g:"📚", ar:"مكتبة",               p:"noun",      ex:"The library closes at nine on Fridays.", t:1, d:"a place where books are kept and borrowed", x:"Return the books to the library by Friday.", c:"edu"},
+ {w:"jewellery",    g:"💍", ar:"مجوهرات",             p:"noun",      ex:"Do not leave jewellery in your room.", t:1, d:"objects such as rings and necklaces that you wear", x:"She keeps her jewellery in a small box.", c:"daily"},
+ {w:"laboratory",   g:"🔬", ar:"معمل",                p:"noun",      ex:"The laboratory is on the second floor.", t:1, d:"a room used for scientific work", x:"Never eat inside the laboratory.", c:"sci"},
+ {w:"temperature",  g:"🌡️", ar:"درجة الحرارة",       p:"noun",      ex:"The temperature drops at night.", t:1, d:"how hot or cold something is", x:"Record the temperature every hour.", c:"sci"},
+ {w:"environment",  g:"🌍", ar:"بيئة",                p:"noun",      ex:"The project protects the environment.", t:1, d:"the natural world around us", x:"Plastic waste harms the environment.", c:"env"},
+ {w:"equipment",    g:"🧰", ar:"معدات",               p:"noun",      ex:"All the equipment is provided free.", t:1, d:"the tools or machines needed for an activity", x:"Bring your own camping equipment.", c:"work"},
+ {w:"appointment",  g:"📅", ar:"موعد",                p:"noun",      ex:"I booked an appointment for Tuesday.", t:1, d:"an arrangement to meet someone at a set time", x:"I missed my dentist appointment.", c:"daily"},
+ {w:"cathedral",    g:"⛪", ar:"كاتدرائية",           p:"noun",      ex:"The tour starts at the cathedral.", t:1, d:"a very large and important church", x:"The cathedral was built in 1220.", c:"travel"},
+ {w:"museum",       g:"🏛️", ar:"متحف",               p:"noun",      ex:"Entry to the museum is free.", t:1, d:"a building where interesting objects are displayed", x:"The museum has a new Egyptian gallery.", c:"travel"},
+ {w:"government",   g:"🏢", ar:"حكومة",               p:"noun",      ex:"The government funds the programme.", t:1, d:"the group of people who control a country", x:"The government raised the tax on fuel.", c:"society"},
+ {w:"immediately",  g:"⏱️", ar:"فورًا",              p:"adverb",    ex:"Report any damage immediately.", t:1, d:"at once, without any delay", x:"Call the office immediately if you are ill.", c:"general"},
+ {w:"definitely",   g:"✅", ar:"بالتأكيد",            p:"adverb",    ex:"I will definitely be there.", t:1, d:"without any doubt", x:"That is definitely the wrong platform.", c:"general"},
+ {w:"separate",     g:"✂️", ar:"منفصل",              p:"adjective", ex:"Use a separate sheet for notes.", t:1, d:"not joined to something else; kept apart", x:"Men and women use separate entrances.", c:"general"},
+ {w:"recommend",    g:"👍", ar:"يوصي / ينصح بـ",      p:"verb",      ex:"I recommend the morning session.", t:1, d:"to say that something is good and worth trying", x:"Which book do you recommend for reading?", c:"general"},
+ {w:"address",      g:"🏠", ar:"عنوان",               p:"noun",      ex:"Write your address in block capitals.", t:1, d:"the details of where someone lives or works", x:"They posted the letter to my old address.", c:"daily"},
+ {w:"business",     g:"💼", ar:"عمل / تجارة",         p:"noun",      ex:"She studies business management.", t:1, d:"the activity of buying and selling; a company", x:"He runs a small family business.", c:"work"},
+ {w:"calendar",     g:"🗓️", ar:"تقويم / نتيجة",      p:"noun",      ex:"The dates are on the calendar.", t:1, d:"a chart showing the days and months of a year", x:"Mark the exam date on your calendar.", c:"daily"},
+ {w:"colleague",    g:"👔", ar:"زميل عمل",            p:"noun",      ex:"Ask a colleague to check the form.", t:1, d:"a person you work with", x:"My colleague will cover the shift.", c:"work"},
+ {w:"committee",    g:"🗳️", ar:"لجنة",               p:"noun",      ex:"The committee meets every month.", t:1, d:"a group of people chosen to make decisions", x:"The committee approved the new plan.", c:"work"},
+ {w:"foreign",      g:"🌐", ar:"أجنبي",               p:"adjective", ex:"He speaks three foreign languages.", t:1, d:"belonging to a country that is not your own", x:"The bank changes foreign currency.", c:"society"},
+ {w:"maintenance",  g:"🔧", ar:"صيانة",               p:"noun",      ex:"Maintenance work starts on Monday.", t:1, d:"the work of keeping something in good condition", x:"The lift is closed for maintenance.", c:"work"},
+ {w:"opportunity",  g:"🚪", ar:"فرصة",                p:"noun",      ex:"It is a great opportunity to travel.", t:1, d:"a chance to do something you want to do", x:"Do not miss this opportunity.", c:"general"},
+ {w:"receive",      g:"📥", ar:"يستلم",               p:"verb",      ex:"You will receive an email tomorrow.", t:1, d:"to get something that is sent or given to you", x:"Did you receive my message?", c:"general"},
+ {w:"schedule",     g:"📆", ar:"جدول زمني",           p:"noun",      ex:"Check the schedule before you come.", t:1, d:"a plan showing the times of events", x:"The schedule is on the noticeboard.", c:"work"},
+ {w:"successful",   g:"🏆", ar:"ناجح",                p:"adjective", ex:"The campaign was very successful.", t:1, d:"achieving what you wanted to achieve", x:"The trial was successful.", c:"general"},
+ {w:"beginning",    g:"🚦", ar:"بداية",               p:"noun",      ex:"Pay the fee at the beginning of term.", t:1, d:"the first part of something", x:"Read the beginning of chapter two.", c:"general"},
+ {w:"achieve",      g:"🎯", ar:"يحقق / ينجز",         p:"verb",      ex:"She wants to achieve band seven.", t:1, d:"to succeed in doing something after effort", x:"You can achieve a lot in six weeks.", c:"general"},
+ {w:"brochure",     g:"📔", ar:"كتيب دعائي",          p:"noun",      ex:"The brochure lists all the prices.", t:1, d:"a small book with pictures and information", x:"Take a brochure from the desk.", c:"travel"},
+ {w:"budget",       g:"💰", ar:"ميزانية",             p:"noun",      ex:"The budget covers travel and food.", t:1, d:"the amount of money available for something", x:"The trip is outside my budget.", c:"money"},
+ {w:"campus",       g:"🏫", ar:"حرم جامعي",           p:"noun",      ex:"The main campus is outside the city.", t:1, d:"the land and buildings of a university", x:"There are three cafes on campus.", c:"edu"},
+ {w:"certificate",  g:"📜", ar:"شهادة",               p:"noun",      ex:"You get a certificate at the end.", t:1, d:"an official document that proves something", x:"Bring your birth certificate.", c:"edu"},
+ {w:"conference",   g:"🎤", ar:"مؤتمر",               p:"noun",      ex:"The conference lasts three days.", t:1, d:"a large formal meeting about a subject", x:"She spoke at a medical conference.", c:"work"},
+ {w:"deposit",      g:"💵", ar:"عربون / وديعة",       p:"noun",      ex:"Pay a deposit of fifty pounds.", t:1, d:"money paid in advance as security", x:"The deposit is returned at the end.", c:"money"},
+ {w:"efficient",    g:"⚙️", ar:"كفء / فعّال",        p:"adjective", ex:"The new system is more efficient.", t:1, d:"working well without wasting time or energy", x:"Email is an efficient way to reply.", c:"general"},
+ {w:"exhibition",   g:"🖼️", ar:"معرض",               p:"noun",      ex:"The exhibition opens next weekend.", t:1, d:"a public show of art or interesting objects", x:"The photography exhibition ends on Sunday.", c:"travel"},
+ {w:"February",     g:"❄️", ar:"فبراير",             p:"noun",      ex:"The course begins in February.", t:1, d:"the second month of the year", x:"Term starts on the fifth of February.", c:"daily"},
+ {w:"guarantee",    g:"🛡️", ar:"ضمان",               p:"noun",      ex:"The laptop has a two year guarantee.", t:1, d:"a promise to repair or replace a product", x:"The guarantee covers parts and labour.", c:"money"},
+ {w:"insurance",    g:"📑", ar:"تأمين",               p:"noun",      ex:"Travel insurance is strongly advised.", t:1, d:"an agreement that pays you if something goes wrong", x:"Health insurance is included in the fee.", c:"money"},
+ {w:"itinerary",    g:"🗺️", ar:"خط سير الرحلة",      p:"noun",      ex:"The itinerary includes two museums.", t:1, d:"a plan of a journey, with places and times", x:"The guide handed out the itinerary.", c:"travel"},
+ {w:"luggage",      g:"🧳", ar:"حقائب السفر",         p:"noun",      ex:"Leave your luggage at reception.", t:1, d:"the bags you take with you when you travel", x:"Excess luggage costs extra.", c:"travel"},
+ {w:"membership",   g:"🎫", ar:"عضوية",               p:"noun",      ex:"Membership costs twenty pounds a year.", t:1, d:"the state of belonging to a club or group", x:"Membership includes free classes.", c:"daily"},
+ {w:"passenger",    g:"🚌", ar:"راكب",                p:"noun",      ex:"Each passenger needs a valid ticket.", t:1, d:"someone travelling in a vehicle but not driving", x:"The bus carries fifty passengers.", c:"travel"},
+ {w:"pharmacy",     g:"💊", ar:"صيدلية",              p:"noun",      ex:"The pharmacy is opposite the bank.", t:1, d:"a shop where medicines are sold", x:"The pharmacy stays open until midnight.", c:"health"},
+ {w:"psychology",   g:"🧩", ar:"علم النفس",           p:"noun",      ex:"He is studying psychology at Leeds.", t:1, d:"the study of the mind and behaviour", x:"She has a degree in psychology.", c:"edu"},
+ {w:"receptionist", g:"🛎️", ar:"موظف استقبال",       p:"noun",      ex:"Give your name to the receptionist.", t:1, d:"someone who greets visitors at a desk", x:"The receptionist will keep your bag.", c:"work"},
+ {w:"souvenir",     g:"🎁", ar:"تذكار",               p:"noun",      ex:"The shop sells souvenirs and maps.", t:1, d:"an object you keep to remember a place", x:"I bought a souvenir from the market.", c:"travel"},
+ {w:"stadium",      g:"🏟️", ar:"استاد",              p:"noun",      ex:"The stadium holds sixty thousand people.", t:1, d:"a large sports ground with seats around it", x:"The new stadium opens in March.", c:"daily"},
+ {w:"statistics",   g:"📈", ar:"إحصاءات",             p:"noun",      ex:"The statistics show a clear rise.", t:1, d:"numbers that give information about something", x:"The statistics come from a 2019 survey.", c:"sci"},
+ {w:"supermarket",  g:"🛒", ar:"سوبر ماركت",          p:"noun",      ex:"There is a supermarket on campus.", t:1, d:"a large shop selling food and household goods", x:"The supermarket delivers on Sundays.", c:"daily"},
+ {w:"surgery",      g:"🏥", ar:"عيادة / جراحة",       p:"noun",      ex:"The doctor's surgery opens at eight.", t:1, d:"a place where you see a doctor; a medical operation", x:"Book the surgery appointment early.", c:"health"},
+ {w:"timetable",    g:"⏰", ar:"جدول مواعيد",         p:"noun",      ex:"The bus timetable changes in June.", t:1, d:"a list of times when buses, trains or classes run", x:"The new timetable starts next week.", c:"daily"},
+ {w:"vegetarian",   g:"🥗", ar:"نباتي",               p:"adjective", ex:"A vegetarian option is available.", t:1, d:"someone who does not eat meat", x:"Two vegetarian meals are included.", c:"health"},
+ {w:"warehouse",    g:"📦", ar:"مخزن",                p:"noun",      ex:"The goods are kept in a warehouse.", t:1, d:"a large building used for storing goods", x:"The books are shipped from a warehouse.", c:"work"},
+ {w:"Wednesday",    g:"📅", ar:"الأربعاء",            p:"noun",      ex:"The class is on Wednesday evening.", t:1, d:"the day between Tuesday and Thursday", x:"The library is closed on Wednesday.", c:"daily"},
+ {w:"aluminium",    g:"🥫", ar:"ألومنيوم",            p:"noun",      ex:"The frame is made of aluminium.", t:1, d:"a light silver-coloured metal", x:"Aluminium cans are easy to recycle.", c:"sci"},
+ {w:"physiotherapy",g:"🦵", ar:"علاج طبيعي",          p:"noun",      ex:"She needs physiotherapy twice a week.", t:1, d:"treatment for injuries using exercise and massage", x:"He had physiotherapy after the accident.", c:"health"},
+ {w:"laundry",      g:"🧺", ar:"غسيل / مغسلة",        p:"noun",      ex:"The laundry room is in the basement.", t:1, d:"clothes that need washing; a place to wash them", x:"There is a laundry on the ground floor.", c:"daily"},
+ {w:"neighbourhood",g:"🏘️", ar:"حي / منطقة سكنية",   p:"noun",      ex:"It is a quiet neighbourhood.", t:1, d:"the area around where you live", x:"The neighbourhood has a weekly market.", c:"society"},
+ // ---- edu ----
+ {w:"curriculum", g:"📘", ar:"المنهج الدراسي", p:"noun", ex:"The science curriculum was updated last year.", d:"all the subjects taught in a school or course", x:"Art is no longer part of the curriculum.", t:1, c:"edu"},
+ {w:"seminar", g:"🗣️", ar:"حلقة نقاش", p:"noun", ex:"The seminar meets on Thursday afternoons.", d:"a small class where a topic is discussed", x:" Every student presents once in the seminar.", t:1, c:"edu"},
+ {w:"thesis", g:"📄", ar:"رسالة علمية / أطروحة", p:"noun", ex:"She is writing her thesis on soil erosion.", d:"a long piece of writing based on your own research", x:"The thesis must be submitted by June.", t:1, c:"edu"},
+ {w:"tuition", g:"🏷️", ar:"مصاريف دراسية / تدريس", p:"noun", ex:"Tuition has risen for international students.", d:"the money paid for teaching; the teaching itself", x:"He gives private tuition in maths.", t:1, c:"edu"},
+ {w:"undergraduate", g:"🎓", ar:"طالب بكالوريوس", p:"noun", ex:"The talk is open to undergraduate students.", d:"a university student who has not yet taken a first degree", x:"She was an undergraduate here in 2018.", t:1, c:"edu"},
+ {w:"postgraduate", g:"🎓", ar:"دراسات عليا", p:"adjective", ex:"He applied for a postgraduate course in Berlin.", d:"relating to study done after a first degree", x:"Postgraduate fees are paid each term.", t:1, c:"edu"},
+ {w:"scholarship", g:"🏅", ar:"منحة دراسية", p:"noun", ex:"She won a full scholarship to Manchester.", d:"money given to a student to pay for study", x:"The scholarship covers fees and books.", t:1, c:"edu"},
+ {w:"syllabus", g:"📋", ar:"مقرر / محتوى المادة", p:"noun", ex:"The syllabus is on the department website.", d:"a list of the topics covered in a course", x:"Two topics were dropped from the syllabus.", t:1, c:"edu"},
+ {w:"plagiarism", g:"🚫", ar:"انتحال / سرقة أدبية", p:"noun", ex:"The university has strict rules on plagiarism.", d:"using someone else's work as if it were your own", x:"Always cite your sources to avoid plagiarism.", t:1, c:"edu"},
+ {w:"bibliography", g:"📚", ar:"قائمة المراجع", p:"noun", ex:"Add a bibliography at the end of the essay.", d:"a list of the books and articles you used", x:"His bibliography ran to four pages.", t:1, c:"edu"},
+ {w:"compulsory", g:"⚖️", ar:"إجباري", p:"adjective", ex:"Maths is compulsory until the age of sixteen.", d:"that must be done because of a rule", x:"The safety course is compulsory for all staff.", t:1, c:"edu"},
+ {w:"vocational", g:"🔨", ar:"مهني / تدريب حرفي", p:"adjective", ex:"He chose a vocational course in engineering.", d:"teaching the skills needed for a particular job", x:"Vocational training leads straight to work.", t:1, c:"edu"},
+ {w:"literacy", g:"🔤", ar:"معرفة القراءة والكتابة", p:"noun", ex:"The programme raised adult literacy rates.", d:"the ability to read and write", x:"Literacy improved after the new scheme.", t:1, c:"edu"},
+ {w:"enrolment", g:"✍️", ar:"التسجيل / القيد", p:"noun", ex:"Enrolment closes at the end of the month.", d:"the act of officially joining a course", x:"Student enrolment fell by ten percent.", t:1, c:"edu"},
+ {w:"lecturer", g:"👨‍🏫", ar:"محاضر", p:"noun", ex:"The lecturer emailed us the slides.", d:"someone who teaches at a university", x:"She works as a lecturer in economics.", t:1, c:"edu"},
+ {w:"semester", g:"📅", ar:"فصل دراسي", p:"noun", ex:"The second semester starts in February.", d:"one of two periods that a college year is divided into", x:"You take four modules each semester.", t:1, c:"edu"},
+ {w:"revision", g:"🔁", ar:"مراجعة", p:"noun", ex:"Leave two weeks for revision before the exam.", d:"study of work you have already done", x:"The revision class is fully booked.", t:1, c:"edu"},
+ {w:"deadline", g:"⏳", ar:"الموعد النهائي", p:"noun", ex:"The deadline for the essay is Friday.", d:"the latest time by which something must be finished", x:"We missed the deadline by one day.", t:1, c:"edu"},
+ // ---- work ----
+ {w:"recruitment", g:"🧑‍💼", ar:"التوظيف", p:"noun", ex:"Recruitment takes about six weeks.", d:"the process of finding new people to join a company", x:"The firm cut its recruitment budget.", t:1, c:"work"},
+ {w:"applicant", g:"📨", ar:"متقدّم لوظيفة", p:"noun", ex:"Every applicant needs two references.", d:"someone who formally asks for a job or place", x:"Only one applicant had the right skills.", t:1, c:"work"},
+ {w:"promotion", g:"⬆️", ar:"ترقية", p:"noun", ex:"She got a promotion after two years.", d:"a move to a more important job", x:"Promotion depends on your annual review.", t:1, c:"work"},
+ {w:"salary", g:"💵", ar:"راتب", p:"noun", ex:"The salary is paid on the last Friday.", d:"the money you are paid each month for your work", x:"He took a lower salary for better hours.", t:1, c:"work"},
+ {w:"supervisor", g:"👀", ar:"مشرف", p:"noun", ex:"Ask your supervisor before you change the plan.", d:"someone who watches over your work", x:"My supervisor approved the leave.", t:1, c:"work"},
+ {w:"workforce", g:"👷", ar:"القوى العاملة", p:"noun", ex:"Half the workforce is under thirty.", d:"all the people who work for a company or country", x:"The factory cut its workforce by a third.", t:1, c:"work"},
+ {w:"entrepreneur", g:"🚀", ar:"رائد أعمال", p:"noun", ex:"The award goes to a young entrepreneur.", d:"someone who starts a business and takes risks", x:"Many entrepreneurs fail on the first attempt.", t:1, c:"work"},
+ {w:"commute", g:"🚇", ar:"التنقّل للعمل", p:"noun", ex:"My commute takes fifty minutes each way.", d:"the journey between home and work", x:"A shorter commute would save me money.", t:1, c:"work"},
+ {w:"internship", g:"🧑‍🎓", ar:"تدريب داخلي", p:"noun", ex:"She did a summer internship at a bank.", d:"a period of work done to gain experience", x:"The internship was unpaid but useful.", t:1, c:"work"},
+ {w:"negotiate", g:"🤝", ar:"يتفاوض", p:"verb", ex:"They negotiated a better contract.", d:"to discuss something in order to reach an agreement", x:"We are still negotiating the price.", t:1, c:"work"},
+ {w:"productivity", g:"📈", ar:"الإنتاجية", p:"noun", ex:"Productivity rose after the new system.", d:"the rate at which work is done", x:"Long hours do not always raise productivity.", t:1, c:"work"},
+ {w:"qualification", g:"📜", ar:"مؤهل", p:"noun", ex:"The job needs a teaching qualification.", d:"an exam or course you have passed", x:"List every qualification on the form.", t:1, c:"work"},
+ {w:"resignation", g:"📤", ar:"استقالة", p:"noun", ex:"He handed in his resignation on Monday.", d:"the act of officially leaving a job", x:"Her resignation surprised the whole team.", t:1, c:"work"},
+ {w:"wages", g:"💰", ar:"أجور", p:"noun", ex:"Wages are paid every Friday.", d:"money paid to a worker, usually weekly", x:"The company raised wages by four percent.", t:1, c:"work"},
+ {w:"colleagues", g:"👔", ar:"الزملاء", p:"noun", ex:"My colleagues covered my shift.", d:"the people you work with", x:"She trained six new colleagues.", t:1, c:"work"},
+ // ---- env ----
+ {w:"pollution", g:"🏭", ar:"تلوث", p:"noun", ex:"Air pollution is worst in winter.", d:"damage caused to air, water or land by harmful substances", x:"The law aims to cut water pollution.", t:1, c:"env"},
+ {w:"emissions", g:"💨", ar:"انبعاثات", p:"noun", ex:"Carbon emissions fell by five percent.", d:"gases sent out into the air", x:"The rules limit emissions from factories.", t:1, c:"env"},
+ {w:"renewable", g:"♻️", ar:"متجدد", p:"adjective", ex:"Renewable energy now powers the school.", d:"able to be replaced naturally, such as wind or solar power", x:"Wind is a renewable resource.", t:1, c:"env"},
+ {w:"sustainable", g:"🌱", ar:"مستدام", p:"adjective", ex:"The farm uses sustainable methods.", d:"able to continue without harming the environment", x:"Sustainable tourism protects local areas.", t:1, c:"env"},
+ {w:"conservation", g:"🛡️", ar:"حفظ البيئة / صون", p:"noun", ex:"The park is run by a conservation group.", d:"the protection of nature and natural resources", x:"Water conservation is vital in dry regions.", t:1, c:"env"},
+ {w:"deforestation", g:"🪓", ar:"إزالة الغابات", p:"noun", ex:"Deforestation destroys animal habitats.", d:"the cutting down of forests over a large area", x:"Farming is the main cause of deforestation.", t:1, c:"env"},
+ {w:"drought", g:"🏜️", ar:"جفاف", p:"noun", ex:"The drought lasted three years.", d:"a long period with little or no rain", x:"Crops failed during the drought.", t:1, c:"env"},
+ {w:"endangered", g:"🐼", ar:"مهدد بالانقراض", p:"adjective", ex:"The panda is no longer endangered.", d:"at risk of disappearing completely", x:"Endangered species are protected by law.", t:1, c:"env"},
+ {w:"habitat", g:"🌳", ar:"الموطن الطبيعي", p:"noun", ex:"The birds lost their habitat to building work.", d:"the natural home of an animal or plant", x:"Wetlands are an important habitat.", t:1, c:"env"},
+ {w:"recycling", g:"♻️", ar:"إعادة التدوير", p:"noun", ex:"Recycling rates have doubled since 2010.", d:"the treating of used items so they can be used again", x:"Put paper in the recycling bin.", t:1, c:"env"},
+ {w:"species", g:"🦋", ar:"نوع (من الكائنات)", p:"noun", ex:"Twelve species live in the lake.", d:"a group of animals or plants of the same kind", x:"The species was discovered in 1904.", t:1, c:"env"},
+ {w:"wildlife", g:"🦌", ar:"الحياة البرية", p:"noun", ex:"The reserve protects local wildlife.", d:"animals and plants living in natural conditions", x:"Wildlife suffers when rivers dry up.", t:1, c:"env"},
+ {w:"atmosphere", g:"🌫️", ar:"الغلاف الجوي", p:"noun", ex:"Gases trap heat in the atmosphere.", d:"the layer of gases around the earth", x:"The atmosphere is thinner at altitude.", t:1, c:"env"},
+ {w:"agriculture", g:"🌾", ar:"الزراعة", p:"noun", ex:"Agriculture employs a third of the population.", d:"the work of growing crops and keeping animals", x:"Modern agriculture uses less water.", t:1, c:"env"},
+ {w:"irrigation", g:"💧", ar:"الري", p:"noun", ex:"The irrigation system was built in 1960.", d:"supplying land with water so crops can grow", x:"Better irrigation raised the harvest.", t:1, c:"env"},
+ {w:"pesticide", g:"🐛", ar:"مبيد حشري", p:"noun", ex:"The farm has stopped using pesticide.", d:"a chemical used to kill insects that damage crops", x:"Pesticide can reach the water supply.", t:1, c:"env"},
+ {w:"biodiversity", g:"🌿", ar:"التنوع البيولوجي", p:"noun", ex:"The forest has extraordinary biodiversity.", d:"the variety of living things in a place", x:"Building roads reduces biodiversity.", t:1, c:"env"},
+ {w:"climate", g:"🌦️", ar:"المناخ", p:"noun", ex:"The climate here is dry and mild.", d:"the usual weather conditions of an area", x:"Climate change affects farming everywhere.", t:1, c:"env"},
+ // ---- health ----
+ {w:"nutrition", g:"🥦", ar:"التغذية", p:"noun", ex:"Good nutrition supports concentration.", d:"the process of getting the food your body needs", x:"The talk was about nutrition in schools.", t:1, c:"health"},
+ {w:"diagnosis", g:"🩺", ar:"التشخيص", p:"noun", ex:"The diagnosis took several weeks.", d:"the act of identifying an illness or problem", x:"An early diagnosis makes treatment easier.", t:1, c:"health"},
+ {w:"symptom", g:"🤒", ar:"عرض مرضي", p:"noun", ex:"A high temperature is a common symptom.", d:"a sign that shows you may be ill", x:"Report any new symptom to the nurse.", t:1, c:"health"},
+ {w:"treatment", g:"💉", ar:"علاج", p:"noun", ex:"The treatment lasts six weeks.", d:"the care given to someone who is ill or hurt", x:"Free treatment is available at the clinic.", t:1, c:"health"},
+ {w:"vaccine", g:"🧪", ar:"لقاح", p:"noun", ex:"The vaccine is given in two doses.", d:"a substance that protects you from a disease", x:"A new vaccine was approved in March.", t:1, c:"health"},
+ {w:"hygiene", g:"🧼", ar:"النظافة الصحية", p:"noun", ex:"Kitchen hygiene is checked every month.", d:"keeping yourself and your surroundings clean", x:"Simple hygiene stops many infections.", t:1, c:"health"},
+ {w:"epidemic", g:"🦠", ar:"وباء", p:"noun", ex:"The epidemic reached the city in weeks.", d:"a disease that spreads quickly among many people", x:"Schools closed during the epidemic.", t:1, c:"health"},
+ {w:"lifestyle", g:"🚴", ar:"نمط الحياة", p:"noun", ex:"An active lifestyle helps you sleep better.", d:"the way in which someone lives", x:"He changed his lifestyle after the move.", t:1, c:"health"},
+ {w:"prescription", g:"📝", ar:"روشتة / وصفة طبية", p:"noun", ex:"Take the prescription to any pharmacy.", d:"a written order from a doctor for medicine", x:"You need a prescription for these tablets.", t:1, c:"health"},
+ {w:"immune", g:"🛡️", ar:"مناعي", p:"adjective", ex:"The immune system fights infection.", d:"protected against a disease", x:"Some people are immune to the virus.", t:1, c:"health"},
+ {w:"calories", g:"🔥", ar:"سعرات حرارية", p:"noun", ex:"The label shows the calories per portion.", d:"units that measure the energy in food", x:"Cycling burns a lot of calories.", t:1, c:"health"},
+ {w:"injury", g:"🩹", ar:"إصابة", p:"noun", ex:"He missed the season through injury.", d:"damage to part of your body", x:"The injury healed within a month.", t:1, c:"health"},
+ {w:"recovery", g:"🌤️", ar:"التعافي", p:"noun", ex:"Her recovery took most of the summer.", d:"the process of getting better after illness", x:"Rest speeds up recovery.", t:1, c:"health"},
+ {w:"clinic", g:"🏥", ar:"عيادة", p:"noun", ex:"The clinic opens at eight on weekdays.", d:"a place where people get medical advice", x:"There is a free eye clinic on campus.", t:1, c:"health"},
+ {w:"dentist", g:"🦷", ar:"طبيب أسنان", p:"noun", ex:"I see the dentist twice a year.", d:"a doctor who treats teeth", x:"The dentist is next to the pharmacy.", t:1, c:"health"},
+ // ---- tech ----
+ {w:"innovation", g:"💡", ar:"ابتكار", p:"noun", ex:"The prize rewards innovation in design.", d:"a new idea, method or product", x:"Innovation keeps the company ahead.", t:1, c:"tech"},
+ {w:"artificial", g:"🤖", ar:"اصطناعي", p:"adjective", ex:"The lake is artificial.", d:"made by people rather than existing in nature", x:"Artificial light affects sleep patterns.", t:1, c:"tech"},
+ {w:"automation", g:"⚙️", ar:"الأتمتة", p:"noun", ex:"Automation cut the number of jobs.", d:"the use of machines to do work people once did", x:"Automation has speeded up packing.", t:1, c:"tech"},
+ {w:"device", g:"📱", ar:"جهاز", p:"noun", ex:"Switch off every device before the flight.", d:"a piece of equipment made for a purpose", x:"The device measures air quality.", t:1, c:"tech"},
+ {w:"software", g:"💾", ar:"برمجيات", p:"noun", ex:"The software is free for students.", d:"the programs used by a computer", x:"New software was installed overnight.", t:1, c:"tech"},
+ {w:"network", g:"🌐", ar:"شبكة", p:"noun", ex:"The network goes down every evening.", d:"a group of computers or people connected together", x:"She built a network of contacts.", t:1, c:"tech"},
+ {w:"digital", g:"🔢", ar:"رقمي", p:"adjective", ex:"All records are now digital.", d:"using computer technology", x:"The library has a digital archive.", t:1, c:"tech"},
+ {w:"surveillance", g:"📹", ar:"المراقبة", p:"noun", ex:"The station is under constant surveillance.", d:"the careful watching of a person or place", x:"Surveillance cameras cover the car park.", t:1, c:"tech"},
+ {w:"privacy", g:"🔒", ar:"الخصوصية", p:"noun", ex:"The app collects data without regard for privacy.", d:"the right to keep your personal life to yourself", x:"Privacy settings should be checked monthly.", t:1, c:"tech"},
+ {w:"subscription", g:"📬", ar:"اشتراك", p:"noun", ex:"The subscription runs for twelve months.", d:"money paid regularly to receive something", x:"Cancel the subscription before it renews.", t:1, c:"tech"},
+ {w:"broadband", g:"📶", ar:"إنترنت عريض النطاق", p:"noun", ex:"Broadband is slow in rural areas.", d:"a fast connection to the internet", x:"The flat comes with free broadband.", t:1, c:"tech"},
+ {w:"wireless", g:"📡", ar:"لاسلكي", p:"adjective", ex:"The printer is wireless.", d:"working without connecting wires", x:"Wireless access is free in the library.", t:1, c:"tech"},
+ {w:"database", g:"🗄️", ar:"قاعدة بيانات", p:"noun", ex:"Search the database for older articles.", d:"an organised store of information on a computer", x:"The database holds 40,000 records.", t:1, c:"tech"},
+ {w:"password", g:"🔑", ar:"كلمة السر", p:"noun", ex:"Change your password every term.", d:"a secret word that lets you use a system", x:"He forgot the password again.", t:1, c:"tech"},
+ {w:"screen", g:"🖥️", ar:"شاشة", p:"noun", ex:"Too much screen time tires the eyes.", d:"the flat surface where images appear", x:"The screen went blank during the talk.", t:1, c:"tech"},
+ // ---- travel ----
+ {w:"destination", g:"📍", ar:"الوجهة", p:"noun", ex:"Rome is a popular destination in spring.", d:"the place you are travelling to", x:"The destination is printed on your ticket.", t:1, c:"travel"},
+ {w:"departure", g:"🛫", ar:"المغادرة", p:"noun", ex:"Departure is at nine from gate four.", d:"the act of leaving, especially on a journey", x:"Check the departure board again.", t:1, c:"travel"},
+ {w:"arrival", g:"🛬", ar:"الوصول", p:"noun", ex:"Arrival times are shown in local time.", d:"the act of reaching a place", x:"Meet me in the arrival hall.", t:1, c:"travel"},
+ {w:"excursion", g:"🚐", ar:"رحلة قصيرة", p:"noun", ex:"The excursion to the castle costs ten pounds.", d:"a short trip made for pleasure", x:"Book the excursion at reception.", t:1, c:"travel"},
+ {w:"tourism", g:"🧳", ar:"السياحة", p:"noun", ex:"Tourism brings money to the island.", d:"the business of providing holidays and services", x:"Tourism fell sharply that winter.", t:1, c:"travel"},
+ {w:"passport", g:"🛂", ar:"جواز سفر", p:"noun", ex:"Your passport must be valid for six months.", d:"an official document that allows you to travel abroad", x:"She left her passport in the hotel.", t:1, c:"travel"},
+ {w:"reservation", g:"📖", ar:"حجز", p:"noun", ex:"I made a reservation for four people.", d:"an arrangement to keep something for you", x:"Your reservation is held until eight.", t:1, c:"travel"},
+ {w:"currency", g:"💱", ar:"العملة", p:"noun", ex:"Change your currency before you fly.", d:"the money used in a particular country", x:"The local currency is very weak.", t:1, c:"travel"},
+ {w:"terminal", g:"🛄", ar:"صالة / محطة", p:"noun", ex:"The bus leaves from terminal two.", d:"a building where passengers arrive and leave", x:"The new terminal opens next year.", t:1, c:"travel"},
+ {w:"hostel", g:"🛏️", ar:"نُزل / بيت شباب", p:"noun", ex:"We stayed in a hostel near the station.", d:"a cheap place to stay, often shared", x:"The hostel has a shared kitchen.", t:1, c:"travel"},
+ {w:"voyage", g:"🚢", ar:"رحلة بحرية", p:"noun", ex:"The voyage took eleven days.", d:"a long journey by sea or in space", x:"He wrote a diary during the voyage.", t:1, c:"travel"},
+ {w:"landmark", g:"🗼", ar:"معلم بارز", p:"noun", ex:"The tower is the city's best known landmark.", d:"a building or feature that is easy to recognise", x:"Use the bridge as a landmark.", t:1, c:"travel"},
+ // ---- society ----
+ {w:"community", g:"🏘️", ar:"المجتمع المحلي", p:"noun", ex:"The community raised money for the hall.", d:"the people living in one area", x:"She works with the local community.", t:1, c:"society"},
+ {w:"population", g:"👥", ar:"السكان", p:"noun", ex:"The population has doubled since 1990.", d:"all the people living in a place", x:"Half the population lives in cities.", t:1, c:"society"},
+ {w:"urban", g:"🏙️", ar:"حضري / مديني", p:"adjective", ex:"Urban areas are growing quickly.", d:"relating to a town or city", x:"Urban transport needs more funding.", t:1, c:"society"},
+ {w:"rural", g:"🌾", ar:"ريفي", p:"adjective", ex:"Rural schools are often very small.", d:"relating to the countryside", x:"Buses are rare in rural areas.", t:1, c:"society"},
+ {w:"poverty", g:"🪙", ar:"الفقر", p:"noun", ex:"The scheme aims to reduce poverty.", d:"the state of being very poor", x:"Poverty affects children's learning.", t:1, c:"society"},
+ {w:"equality", g:"⚖️", ar:"المساواة", p:"noun", ex:"The law promotes equality at work.", d:"the state of being equal in rights or status", x:"Equality of access is the main goal.", t:1, c:"society"},
+ {w:"charity", g:"🎗️", ar:"عمل خيري / جمعية خيرية", p:"noun", ex:"The charity feeds 300 families a week.", d:"an organisation that helps people in need", x:"He runs marathons for charity.", t:1, c:"society"},
+ {w:"volunteer", g:"🙋", ar:"متطوع", p:"noun", ex:"Every volunteer gets a free lunch.", d:"someone who works without being paid", x:"The museum needs ten more volunteers.", t:1, c:"society"},
+ {w:"generation", g:"👨‍👩‍👧", ar:"جيل", p:"noun", ex:"This generation grew up with smartphones.", d:"all the people born at about the same time", x:"The house has been ours for three generations.", t:1, c:"society"},
+ {w:"tradition", g:"🎎", ar:"تقليد / عُرف", p:"noun", ex:"The festival is an old local tradition.", d:"a custom passed down over many years", x:"Tradition matters a lot in the village.", t:1, c:"society"},
+ {w:"citizen", g:"🪪", ar:"مواطن", p:"noun", ex:"Every citizen can vote at eighteen.", d:"a person who belongs to a country", x:"She became a citizen last year.", t:1, c:"society"},
+ {w:"authority", g:"🏛️", ar:"سلطة / جهة رسمية", p:"noun", ex:"The local authority runs the libraries.", d:"the power to make decisions; an official body", x:"He has no authority to sign this.", t:1, c:"society"},
+ {w:"neighbour", g:"🏠", ar:"جار", p:"noun", ex:"My neighbour takes in my parcels.", d:"a person living near you", x:"The neighbours complained about the noise.", t:1, c:"society"},
+ // ---- sci ----
+ {w:"research", g:"🔎", ar:"بحث", p:"noun", ex:"Her research looks at sleep and memory.", d:"careful study done to discover new facts", x:"The research was funded by the university.", t:1, c:"sci"},
+ {w:"hypothesis", g:"❓", ar:"فرضية", p:"noun", ex:"The results supported the hypothesis.", d:"an idea that is tested to see if it is true", x:"They tested a simple hypothesis.", t:1, c:"sci"},
+ {w:"experiment", g:"🧪", ar:"تجربة", p:"noun", ex:"The experiment ran for six months.", d:"a scientific test done to learn something", x:"Repeat the experiment twice.", t:1, c:"sci"},
+ {w:"analysis", g:"📊", ar:"تحليل", p:"noun", ex:"The analysis shows a clear pattern.", d:"a careful examination of something", x:"Her analysis of the data was praised.", t:1, c:"sci"},
+ {w:"evidence", g:"🧾", ar:"دليل / أدلة", p:"noun", ex:"There is little evidence for that claim.", d:"facts that show whether something is true", x:"New evidence changed the conclusion.", t:1, c:"sci"},
+ {w:"survey", g:"📋", ar:"استقصاء / مسح", p:"noun", ex:"The survey covered 2,000 households.", d:"a set of questions asked to many people", x:"A survey found that most people agreed.", t:1, c:"sci"},
+ {w:"participant", g:"🙋‍♂️", ar:"مشارك", p:"noun", ex:"Each participant answered ten questions.", d:"someone who takes part in a study or event", x:"Participants were paid for their time.", t:1, c:"sci"},
+ {w:"conclusion", g:"✔️", ar:"استنتاج / خاتمة", p:"noun", ex:"The conclusion is stated in the last chapter.", d:"a decision reached after thinking about facts", x:"We reached the same conclusion.", t:1, c:"sci"},
+ {w:"theory", g:"💭", ar:"نظرية", p:"noun", ex:"The theory was first proposed in 1912.", d:"an explanation of why something happens", x:"His theory has never been tested.", t:1, c:"sci"},
+ {w:"phenomenon", g:"🌀", ar:"ظاهرة", p:"noun", ex:"The phenomenon appears only at night.", d:"something that happens and can be observed", x:"Scientists cannot explain the phenomenon.", t:1, c:"sci"},
+ {w:"accuracy", g:"🎯", ar:"الدقة", p:"noun", ex:"Check the accuracy of your figures.", d:"how correct or exact something is", x:"The machine measures with great accuracy.", t:1, c:"sci"},
+ {w:"sample", g:"🧫", ar:"عينة", p:"noun", ex:"They tested a sample of the water.", d:"a small part used to represent the whole", x:"The sample was too small to be useful.", t:1, c:"sci"},
+ {w:"significant", g:"❗", ar:"ذو دلالة / مهم", p:"adjective", ex:"There was a significant rise in numbers.", d:"large or important enough to be noticed", x:"The difference was not significant.", t:1, c:"sci"},
+ {w:"measurement", g:"📏", ar:"قياس", p:"noun", ex:"Record every measurement in the table.", d:"the size or amount found by measuring", x:"One measurement was clearly wrong.", t:1, c:"sci"},
+ // ---- money ----
+ {w:"economy", g:"💹", ar:"الاقتصاد", p:"noun", ex:"The economy grew by two percent.", d:"the system of money and trade in a country", x:"Tourism supports the whole economy.", t:1, c:"money"},
+ {w:"inflation", g:"📈", ar:"التضخم", p:"noun", ex:"Inflation reached six percent last year.", d:"a general rise in prices", x:"Wages did not keep up with inflation.", t:1, c:"money"},
+ {w:"investment", g:"💼", ar:"استثمار", p:"noun", ex:"The investment paid off within a year.", d:"money put into something to make a profit", x:"Foreign investment built the new port.", t:1, c:"money"},
+ {w:"expenditure", g:"💸", ar:"الإنفاق", p:"noun", ex:"Household expenditure rose after 2015.", d:"the money that is spent", x:"Cut expenditure on travel.", t:1, c:"money"},
+ {w:"income", g:"💰", ar:"الدخل", p:"noun", ex:"Their income comes mainly from farming.", d:"the money a person or country receives", x:"Low income families pay no fee.", t:1, c:"money"},
+ {w:"profit", g:"📗", ar:"الربح", p:"noun", ex:"The shop made a small profit.", d:"money gained after costs are paid", x:"Profit fell for the third year.", t:1, c:"money"},
+ {w:"mortgage", g:"🏡", ar:"رهن عقاري", p:"noun", ex:"They took out a mortgage over 25 years.", d:"a loan used to buy a house", x:"The mortgage costs half his salary.", t:1, c:"money"},
+ // ---- trend ----
+ {w:"increase", g:"⬆️", ar:"يزيد / زيادة", p:"verb", ex:"Sales increased sharply after May.", d:"to become larger in number or amount", x:"Prices increase every January.", t:1, c:"trend"},
+ {w:"decrease", g:"⬇️", ar:"ينقص / نقصان", p:"verb", ex:"Visitor numbers decreased in winter.", d:"to become smaller in number or amount", x:"The rate decreased to four percent.", t:1, c:"trend"},
+ {w:"fluctuate", g:"〰️", ar:"يتذبذب", p:"verb", ex:"Prices fluctuate throughout the year.", d:"to change often from one level to another", x:"Attendance fluctuated between 20 and 60.", t:1, c:"trend"},
+ {w:"peak", g:"⛰️", ar:"الذروة / يبلغ ذروته", p:"noun", ex:"Sales reached a peak in December.", d:"the highest point or level", x:"The peak came earlier than expected.", t:1, c:"trend"},
+ {w:"decline", g:"📉", ar:"انخفاض / يتراجع", p:"noun", ex:"There was a steady decline after 2008.", d:"a fall in number, amount or quality", x:"The decline continued for five years.", t:1, c:"trend"},
+ {w:"steady", g:"➡️", ar:"ثابت / مطّرد", p:"adjective", ex:"There was steady growth all decade.", d:"continuing at the same rate without change", x:"The figure stayed steady until March.", t:1, c:"trend"},
+ {w:"dramatic", g:"‼️", ar:"حاد / كبير", p:"adjective", ex:"A dramatic fall followed the new tax.", d:"sudden and very noticeable", x:"The change was dramatic and fast.", t:1, c:"trend"},
+ {w:"gradual", g:"🐢", ar:"تدريجي", p:"adjective", ex:"The rise was gradual but constant.", d:"happening slowly over a long time", x:"A gradual improvement began in 2011.", t:1, c:"trend"},
+ {w:"proportion", g:"🥧", ar:"نسبة / حصة", p:"noun", ex:"A large proportion of students walk.", d:"a part of a whole, often shown as a share", x:"The proportion of women doubled.", t:1, c:"trend"},
+ {w:"majority", g:"👥", ar:"الأغلبية", p:"noun", ex:"The majority chose the morning class.", d:"more than half of a group", x:"A clear majority voted against.", t:1, c:"trend"},
+ {w:"minority", g:"👤", ar:"الأقلية", p:"noun", ex:"Only a minority use the bus.", d:"less than half of a group", x:"A small minority disagreed.", t:1, c:"trend"},
+ {w:"approximately", g:"➗", ar:"تقريبًا", p:"adverb", ex:"Approximately 200 people attended.", d:"almost exactly but not completely", x:"The trip takes approximately two hours.", t:1, c:"trend"},
+ {w:"respectively", g:"🔢", ar:"على التوالي", p:"adverb", ex:"Sales rose by 5% and 8% respectively.", d:"in the same order as the things already named", x:"They finished first and third respectively.", t:1, c:"trend"},
+ {w:"overall", g:"🧮", ar:"إجمالًا / بشكل عام", p:"adverb", ex:"Overall, the results were positive.", d:"considering everything together", x:"Numbers fell overall during the period.", t:1, c:"trend"}
+
 ];
 
 /* ------------------------------------------------------------------ */
@@ -403,7 +559,7 @@ let stats = {};          // { word: {seen, wrong} }
 let queue = [], idx = 0, cur = null;
 let right = 0, asked = 0, streak = 0, best = 0;
 let firstTry = true, tries = 0, answered = false, missed = [], lastDeck = 'all';
-let voice = null, unlocked = false, customPool = [], libFilter = 'all', backTo = 's-start';
+let voice = null, unlocked = false, customPool = [], libFilter = 'all', libTopic = 'all', backTo = 's-start';
 
 /* ---------- storage ---------- */
 async function loadStats(){
@@ -658,6 +814,17 @@ function finish(){
 function hl(s, w){ return s.replace(new RegExp('('+w+')','i'), '<b>$1</b>'); }
 function sentences(o){ return '<p class="sent">'+hl(o.ex,o.w)+'</p><p class="sent">'+hl(o.x,o.w)+'</p>'; }
 
+const TOPICS = [
+  ['all','الكل'],['mine','📓 دفترك'],['edu','🎓 تعليم'],['work','💼 شغل'],['env','🌍 بيئة'],
+  ['health','🩺 صحة'],['tech','💻 تكنولوجيا'],['travel','✈️ سفر'],['society','👥 مجتمع'],
+  ['sci','🔬 علوم'],['money','💰 فلوس'],['trend','📈 وصف الرسوم'],['daily','🧺 حياة يومية'],['general','✳️ عام']
+];
+function renderTopics(){
+  $('topic-tabs').innerHTML = TOPICS.map(([k,l])=>{
+    const n = k==='all' ? WORDS.length : WORDS.filter(o=>o.c===k).length;
+    return '<button class="tab'+(k===libTopic?' on':'')+'" data-c="'+k+'">'+l+' '+n+'</button>';
+  }).join('');
+}
 function libList(){
   const q = $('lib-search').value.trim().toLowerCase();
   return WORDS.filter(o=>{
@@ -666,6 +833,7 @@ function libList(){
     if(libFilter==='book'  && !e.b) return false;
     if(libFilter==='new'   && tried(o.w)) return false;
     if(libFilter==='done'  && !(e.r>0 && e.w===0)) return false;
+    if(libTopic!=='all' && o.c!==libTopic) return false;
     if(q && !(o.w.toLowerCase().includes(q) || o.ar.includes(q))) return false;
     return true;
   });
@@ -676,7 +844,16 @@ function renderLib(){
   $('lib-drill').textContent = list.length ? 'درّب على المعروض (' + list.length + ')' : 'مفيش كلمات هنا';
   $('lib-drill').disabled = !list.length;
   if(!list.length){
-    $('lib-list').innerHTML = '<p class="empty">مفيش كلمات في الفلتر ده.<br>جرب تبدّل التبويب أو تمسح البحث.</p>';
+    const q = $('lib-search').value.trim();
+    const msg = q
+      ? '🔍 مفيش كلمة بالاسم ده<br><span>جرب تكتب جزء من الكلمة بالإنجليزي أو المعنى بالعربي</span>'
+      : libFilter==='wrong' ? '👏 لسه معندكش غلطات<br><span>أول ما تغلط في كلمة هتلاقيها مستنياك هنا</span>'
+      : libFilter==='book'  ? '🔖 لسه معندكش كلمات محفوظة<br><span>دوس على علامة البوكمارك جنب أي كلمة وهتتجمع هنا</span>'
+      : libFilter==='new'   ? '🎉 مفيش كلمة لسه ماجربتهاش<br><span>إنت مرّيت على الـ ' + WORDS.length + ' كلمة كلهم</span>'
+      : libFilter==='done'  ? '🎯 لسه معندكش كلمات مظبوطة<br><span>الكلمة بتتحسب هنا لما تكتبها صح من أول محاولة</span>'
+      : libTopic!=='all' ? '📭 مفيش كلمات في الموضوع ده<br><span>جرب موضوع تاني من الشريط اللي فوق</span>'
+      : '📭 القائمة فاضية';
+    $('lib-list').innerHTML = '<p class="empty">' + msg + '</p>';
     return;
   }
   $('lib-list').innerHTML = list.map(o=>{
@@ -700,7 +877,12 @@ function renderLib(){
       '</div></div>';
   }).join('');
 }
-function openLib(){ renderLib(); show('s-lib'); }
+function openLib(){ renderTopics(); renderLib(); show('s-lib'); }
+$('topic-tabs').addEventListener('click', e=>{
+  const t = e.target.closest('[data-c]'); if(!t) return;
+  libTopic = t.dataset.c; renderTopics(); renderLib();
+  $('topic-tabs').scrollLeft = t.offsetLeft - 60;
+});
 
 $('go-lib').addEventListener('click', ()=>{ backTo='s-start'; openLib(); });
 function goBack(){ renderCounts(); if(backTo==='s-lib') renderLib(); show(backTo); }
