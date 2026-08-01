@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<meta name="theme-color" content="#3B2FE0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Spelling">
+<link rel="apple-touch-icon" href="data:image/png;base64,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P1OeF3kGABAlAABRAgAQJQAAUQIAECUAAFECABAlAABRAgAQJQAAUQLAbua/b8AbDmALAQCIEgCAKAFgTzPvybj/AxsJAECUALCzOQdzx3/YTgDY3+jpbPrDLgQAIEoAGGLcId3xH/YiAIwyYlKb/rAjAWCgfee16Q/7ur32BXByj1P7/svb7T8E2JcNgBm2THDTHwaxATDJK1YBox+GEgCmeprpF0pg7sMcAsB1mPJwdZ4BAEQJAECUAABECQBAlAAARAkAQJQAAEQJAECUAABECQBAlAAARAkAQJQAAEQJAECUAABECQBAlAAARAkAQJQAAEQJAECUAABECQBAlAAARAkAQJQAAEQJAECUAABECQBAlAAARAkAQJQAAEQJAECUAABECQBAlAAARAkAdXef/j39b4QXCQBAlAAARAkATL0n4/4P6xAAgCgBgJubWQdzx3+WIgDwzejpbPqzGgEAiBIA+G7cId3xnwUJAPxkxKQ2/VmTAMBz+85r059lvfnw7uu1rwEWdf/545aPG/0szgYAv7Vlgpv+rM8GAP/vr1YBo5+jEAD4CxdKYO5zOAIAEOUZAECUAABECQBAlAAARAkAQJQAAEQJAECUAABECQBAlAAARAkAQJQAAEQJAECUAABECQBAlAAARAkAQJQAAEQJAECUAABECQBAlAAARAkAQJQAAEQJAECUAABECQBAlAAARAkAQJQAAEQJAECUAABECQBAlAAARAkAQJQAAEQJAECUAABECQBAlAAARAkAQJQAAEQJAECUAABECQBAlAAARAkAQJQAAEQJAECUAABECQBAlAAARAkAQJQAAEQJAECUAABECQBAlAAARAkAQJQAAEQJAECUAABECQBAlAAARAkAQJQAAEQJAECUAABECQBAlAAARAkAQJQAAEQJAECUAABECQBAlAAARAkAQJQAAEQJAECUAABECQBAlAAARAkAQJQAAEQJAECUAABECQBAlAAARAkAQJQAAEQJAECUAABECQBAlAAARAkAQJQAAET9B68hQXGNtbxKAAAAAElFTkSuQmCC">
+<link rel="icon" href="data:image/png;base64,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">
+<link rel="manifest" id="mf">
+<title>Spelling Drill — IELTS</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" media="print" onload="this.media='all'"
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@700&display=swap">
+<style>
+  :root{
+    --paper:#E7EAF1;
+    --card:#FFFFFF;
+    --ink:#0F1420;
+    --muted:#6C7690;
+    --line:#D8DDE8;
+    --primary:#3B2FE0;
+    --primary-soft:#EBE9FE;
+    --ok:#0B9A6D;
+    --ok-soft:#E1F5EE;
+    --bad:#DE3B45;
+    --bad-soft:#FCE9EA;
+    --amber:#FFC53D;
+    --r:18px;
+    --ar:"SF Arabic","Geeza Pro","Noto Sans Arabic","Droid Arabic Naskh",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    --dis:"Space Grotesk",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    --mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,"Roboto Mono",monospace;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;height:100%}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--ar);
+    display:flex;justify-content:center;
+    padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
+  }
+  .app{width:100%;max-width:480px;display:flex;flex-direction:column;min-height:100vh;padding:14px 16px 22px}
+  .en{font-family:var(--dis);direction:ltr}
+  .mono{font-family:var(--mono);direction:ltr}
+
+  /* ---------- header ---------- */
+  header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+  .mark{display:flex;align-items:center;gap:8px;font-weight:600;font-size:14px}
+  .mark b{font-family:var(--dis);letter-spacing:-.02em}
+  .bars{display:flex;align-items:flex-end;gap:2px;height:16px;direction:ltr}
+  .bars i{width:3px;background:var(--primary);border-radius:2px;height:5px;display:block}
+  .bars.on i{animation:eq .6s ease-in-out infinite alternate}
+  .bars i:nth-child(2){animation-delay:.15s;height:11px}
+  .bars i:nth-child(3){animation-delay:.3s;height:16px}
+  .bars i:nth-child(4){animation-delay:.45s;height:8px}
+  @keyframes eq{from{transform:scaleY(.35)}to{transform:scaleY(1)}}
+  .stats{display:flex;gap:6px}
+  .chip{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:5px 10px;font-size:12px;font-weight:600;display:flex;align-items:center;gap:4px}
+  .chip.streak{background:#FFF7E0;border-color:#F5DFA0}
+
+  /* ---------- progress ---------- */
+  .track{height:4px;background:var(--line);border-radius:9px;overflow:hidden;margin-bottom:14px}
+  .track > div{height:100%;background:var(--primary);width:0;transition:width .35s ease}
+
+  /* ---------- card ---------- */
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px 18px;text-align:center;box-shadow:0 1px 0 rgba(15,20,32,.04)}
+  .glyph{
+    width:126px;height:126px;margin:0 auto 14px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;font-size:60px;line-height:1;
+    background:radial-gradient(circle at 30% 25%, #F3F1FF, #E4E8F2);
+    border:1px solid var(--line);
+  }
+  .glyph.pop{animation:pop .35s cubic-bezier(.2,1.4,.4,1)}
+  @keyframes pop{from{transform:scale(.86);opacity:0}to{transform:scale(1);opacity:1}}
+  .meaning{font-size:19px;font-weight:600;margin:0 0 3px}
+  .pos{font-size:12px;color:var(--muted);margin:0 0 16px}
+  .audio{display:flex;gap:10px;justify-content:center;margin-bottom:4px}
+  .play{
+    border:0;border-radius:14px;padding:13px 20px;font-size:15px;font-weight:600;font-family:inherit;
+    background:var(--primary);color:#fff;display:flex;align-items:center;gap:8px;cursor:pointer;
+  }
+  .play:active{transform:scale(.97)}
+  .play.ghost{background:var(--primary-soft);color:var(--primary)}
+  .play .bars i{background:currentColor}
+
+  /* ---------- input ---------- */
+  .field{margin-top:18px;position:relative}
+  input[type=text]{
+    width:100%;padding:16px 14px;border-radius:14px;border:2px solid var(--line);background:var(--card);
+    font-family:var(--mono);font-size:20px;font-weight:700;letter-spacing:.06em;
+    text-align:center;direction:ltr;color:var(--ink);outline:none;
+  }
+  input[type=text]:focus{border-color:var(--primary)}
+  input[type=text]::placeholder{font-weight:400;letter-spacing:0;color:#AEB6C7;font-size:15px}
+  .shake{animation:shake .32s}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+
+  .row{display:flex;gap:10px;margin-top:12px}
+  button.act{
+    flex:1;padding:15px;border-radius:14px;border:0;font-family:inherit;font-size:16px;font-weight:600;cursor:pointer;
+    background:var(--ink);color:#fff;
+  }
+  button.act:active{transform:scale(.99)}
+  button.act:disabled{opacity:.4}
+  button.sub{flex:0 0 auto;background:var(--card);color:var(--muted);border:1px solid var(--line);padding:15px 16px;border-radius:14px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer}
+
+  /* ---------- verdict + letter strip (signature) ---------- */
+  .verdict{margin-top:16px;border-radius:var(--r);padding:16px;border:1px solid var(--line);background:var(--card)}
+  .verdict.ok{background:var(--ok-soft);border-color:#B9E6D6}
+  .verdict.bad{background:var(--bad-soft);border-color:#F3C6C9}
+  .vtitle{font-size:15px;font-weight:600;margin:0 0 12px;display:flex;align-items:center;gap:7px}
+  .strip{display:flex;flex-direction:column;gap:6px;align-items:center;direction:ltr;overflow-x:auto;padding-bottom:2px}
+  .lrow{display:flex;gap:4px}
+  .cell{
+    min-width:26px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;
+    font-family:var(--mono);font-size:16px;font-weight:700;background:#fff;border:1px solid var(--line);
+  }
+  .cell.match{color:var(--ok);border-color:#BCE7D8;background:#F2FBF8}
+  .cell.miss{color:#fff;background:var(--bad);border-color:var(--bad)}
+  .cell.gap{color:#C3CAD8;background:#F4F6FA}
+  .cell.target{color:var(--ink);background:#fff;border-color:var(--line)}
+  .cell.target.miss{background:#FFF;color:var(--bad);border:2px solid var(--bad)}
+  .lbl{font-size:10px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;font-family:var(--dis);width:100%;text-align:left}
+  .example{margin:14px 0 0;font-size:13.5px;line-height:1.7;color:#3B455C;direction:ltr;text-align:left;font-family:var(--dis)}
+  .example b{background:var(--amber);border-radius:3px;padding:0 3px}
+
+  /* ---------- screens ---------- */
+  .screen{display:none}
+  .screen.on{display:block}
+  h1{font-family:var(--dis);font-size:30px;letter-spacing:-.03em;margin:6px 0 2px;direction:ltr;text-align:left}
+  .sub{color:var(--muted);font-size:14px;margin:0 0 22px;line-height:1.7}
+  .deck{
+    width:100%;text-align:right;background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+    padding:16px;margin-bottom:10px;display:flex;align-items:center;gap:12px;cursor:pointer;font-family:inherit;
+  }
+  .deck:active{border-color:var(--primary)}
+  .deck .ic{width:42px;height:42px;border-radius:12px;background:var(--primary-soft);display:flex;align-items:center;justify-content:center;font-size:20px;flex:0 0 auto}
+  .deck .t{flex:1}
+  .deck .t b{display:block;font-size:15.5px;font-weight:600}
+  .deck .t span{font-size:12.5px;color:var(--muted)}
+  .deck .n{font-family:var(--dis);font-weight:700;color:var(--muted);font-size:13px}
+  .note{font-size:12px;color:var(--muted);line-height:1.8;margin-top:18px;padding:12px 14px;background:#DDE2EC;border-radius:12px}
+  .big{font-family:var(--dis);font-size:64px;font-weight:700;letter-spacing:-.04em;margin:0;direction:ltr}
+  .wlist{margin-top:16px;display:flex;flex-wrap:wrap;gap:6px;direction:ltr}
+  .wlist span{font-family:var(--mono);font-size:13px;background:var(--bad-soft);color:var(--bad);border:1px solid #F3C6C9;padding:5px 9px;border-radius:8px}
+  .foot{margin-top:auto;padding-top:18px;text-align:center;font-size:11.5px;color:var(--muted)}
+  @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ============ START ============ -->
+  <section id="s-start" class="screen on">
+    <div class="mark" style="margin-bottom:26px"><span class="bars"><i></i><i></i><i></i><i></i></span> <b class="en">SPELLING DRILL</b></div>
+    <h1 class="en">Hear it.<br>Spell it.</h1>
+    <p class="sub">اسمع الكلمة، شوف الصورة، واكتبها. التطبيق هيقارن حرف بحرف ويوريك بالظبط فين الغلطة.</p>
+
+    <button class="deck" data-deck="notebook">
+      <span class="ic">📓</span>
+      <span class="t"><b>كلمات دفترك</b><span>الكلمات اللي غلطت فيها قبل كده</span></span>
+      <span class="n" id="n-notebook"></span>
+    </button>
+    <button class="deck" data-deck="traps">
+      <span class="ic">🎧</span>
+      <span class="t"><b>فخاخ الـ Listening</b><span>كلمات بتتكرر في الامتحان وإملاؤها صعب</span></span>
+      <span class="n" id="n-traps"></span>
+    </button>
+    <button class="deck" data-deck="all">
+      <span class="ic">🔀</span>
+      <span class="t"><b>الكل — عشوائي</b><span>الديكين مع بعض</span></span>
+      <span class="n" id="n-all"></span>
+    </button>
+    <button class="deck" data-deck="weak">
+      <span class="ic">🎯</span>
+      <span class="t"><b>غلطاتي</b><span>الكلمات اللي غلطت فيها هنا</span></span>
+      <span class="n" id="n-weak">0</span>
+    </button>
+
+    <p class="note">قفل الـ autocorrect من كيبورد الموبايل لو تقدر — التطبيق بيقفله من ناحيته، بس بعض الكيبوردات بتصر تصحح لوحدها وده هيضيع الهدف من التمرين.</p>
+    <div class="foot en">Web Speech API · en-GB</div>
+  </section>
+
+  <!-- ============ DRILL ============ -->
+  <section id="s-drill" class="screen">
+    <header>
+      <button class="mark" id="btn-back" style="background:none;border:0;font-family:inherit;color:var(--muted);cursor:pointer;padding:0">‹ رجوع</button>
+      <div class="stats">
+        <span class="chip streak" id="chip-streak">🔥 0</span>
+        <span class="chip" id="chip-score">0 / 0</span>
+      </div>
+    </header>
+    <div class="track"><div id="bar"></div></div>
+
+    <div class="card">
+      <div class="glyph" id="glyph">🎧</div>
+      <p class="meaning" id="meaning">—</p>
+      <p class="pos" id="pos"></p>
+      <div class="audio">
+        <button class="play" id="btn-play"><span class="bars" id="eq"><i></i><i></i><i></i><i></i></span> اسمع</button>
+        <button class="play ghost" id="btn-slow">🐢 ببطء</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <input type="text" id="answer" placeholder="اكتب الكلمة بالإنجليزي"
+             autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false"
+             enterkeyhint="go" inputmode="text">
+    </div>
+
+    <div class="row">
+      <button class="act" id="btn-check">تصحيح</button>
+      <button class="sub" id="btn-hint">💡 تلميح</button>
+    </div>
+
+    <div id="verdict"></div>
+    <div class="foot"><span id="btn-skip" style="cursor:pointer">تخطي الكلمة دي ›</span></div>
+  </section>
+
+  <!-- ============ SUMMARY ============ -->
+  <section id="s-done" class="screen">
+    <div class="mark" style="margin-bottom:30px"><span class="bars"><i></i><i></i><i></i><i></i></span> <b class="en">ROUND COMPLETE</b></div>
+    <p class="sub" style="margin:0">صح من أول مرة</p>
+    <p class="big" id="final">0%</p>
+    <p class="sub" id="final-line" style="margin-top:10px"></p>
+    <div id="missed-wrap" style="display:none">
+      <p class="lbl" style="color:var(--muted)">راجع دول</p>
+      <div class="wlist" id="missed"></div>
+    </div>
+    <div class="row" style="margin-top:26px">
+      <button class="act" id="btn-again">جولة تانية</button>
+      <button class="sub" id="btn-home">الديكات</button>
+    </div>
+    <div class="foot"></div>
+  </section>
+
+</div>
+
+<script>
+/* ------------------------------------------------------------------
+   WORD BANK
+   notebook = الكلمات اللي طلعت من دفتر أحمد
+   traps    = كلمات إملاؤها صعب وبتتكرر في الـ Listening
+------------------------------------------------------------------ */
+const WORDS = [
+ // ---- notebook ----
+ {w:"convenient",   g:"🕒", ar:"مريح / مناسب",        p:"adjective", ex:"The hotel is in a convenient location."},
+ {w:"suffer",       g:"😣", ar:"يعاني",               p:"verb",      ex:"Many students suffer from exam stress."},
+ {w:"mandatory",    g:"⚖️", ar:"إجباري",              p:"adjective", ex:"Attendance at the lecture is mandatory."},
+ {w:"optimistic",   g:"🌤️", ar:"متفائل",             p:"adjective", ex:"She feels optimistic about the results."},
+ {w:"energetic",    g:"⚡", ar:"نشيط / مفعم بالطاقة",  p:"adjective", ex:"The children were very energetic today."},
+ {w:"imaginary",    g:"🦄", ar:"خيالي / وهمي",        p:"adjective", ex:"The story is set in an imaginary city."},
+ {w:"permanent",    g:"🧱", ar:"دائم",                p:"adjective", ex:"He was offered a permanent contract."},
+ {w:"confident",    g:"💪", ar:"واثق",                p:"adjective", ex:"I feel confident about the speaking test."},
+ {w:"flexible",     g:"🤸", ar:"مرن",                 p:"adjective", ex:"The course has flexible study hours."},
+ {w:"knowledgeable",g:"🧠", ar:"واسع المعرفة",        p:"adjective", ex:"The guide was very knowledgeable."},
+ {w:"comfortable",  g:"🛋️", ar:"مريح",               p:"adjective", ex:"The seats were clean and comfortable."},
+ {w:"exciting",     g:"🎢", ar:"مثير / ممتع",         p:"adjective", ex:"The trip sounds really exciting."},
+ {w:"accommodation",g:"🏨", ar:"سكن / إقامة",         p:"noun",      ex:"Student accommodation costs 400 a month."},
+ {w:"questionnaire",g:"📋", ar:"استبيان",             p:"noun",      ex:"Please complete the questionnaire online."},
+ {w:"facilities",   g:"🏗️", ar:"مرافق / تسهيلات",    p:"noun",      ex:"The sports facilities open at seven."},
+ {w:"commencement", g:"🎓", ar:"بداية / بدء",         p:"noun",      ex:"The commencement of the course is in May."},
+ {w:"intermediate", g:"📶", ar:"متوسط المستوى",       p:"adjective", ex:"He joined the intermediate class."},
+ {w:"evaluation",   g:"📊", ar:"تقييم",               p:"noun",      ex:"A written evaluation is due on Friday."},
+ {w:"assessment",   g:"📝", ar:"تقييم / تقدير",       p:"noun",      ex:"The final assessment is worth 40%."},
+ {w:"discussion",   g:"💬", ar:"مناقشة",              p:"noun",      ex:"We had a long discussion about it."},
+ {w:"reference",    g:"🔖", ar:"مرجع",                p:"noun",      ex:"You need a reference from your tutor."},
+ {w:"vehicle",      g:"🚗", ar:"مركبة",               p:"noun",      ex:"Leave your vehicle in car park B."},
+ // ---- traps ----
+ {w:"receipt",      g:"🧾", ar:"إيصال",               p:"noun",      ex:"Keep your receipt as proof of payment.", t:1},
+ {w:"restaurant",   g:"🍽️", ar:"مطعم",               p:"noun",      ex:"The restaurant is next to the library.", t:1},
+ {w:"library",      g:"📚", ar:"مكتبة",               p:"noun",      ex:"The library closes at nine on Fridays.", t:1},
+ {w:"jewellery",    g:"💍", ar:"مجوهرات",             p:"noun",      ex:"Do not leave jewellery in your room.", t:1},
+ {w:"laboratory",   g:"🔬", ar:"معمل",                p:"noun",      ex:"The laboratory is on the second floor.", t:1},
+ {w:"temperature",  g:"🌡️", ar:"درجة الحرارة",       p:"noun",      ex:"The temperature drops at night.", t:1},
+ {w:"environment",  g:"🌍", ar:"بيئة",                p:"noun",      ex:"The project protects the environment.", t:1},
+ {w:"equipment",    g:"🧰", ar:"معدات",               p:"noun",      ex:"All the equipment is provided free.", t:1},
+ {w:"appointment",  g:"📅", ar:"موعد",                p:"noun",      ex:"I booked an appointment for Tuesday.", t:1},
+ {w:"cathedral",    g:"⛪", ar:"كاتدرائية",           p:"noun",      ex:"The tour starts at the cathedral.", t:1},
+ {w:"museum",       g:"🏛️", ar:"متحف",               p:"noun",      ex:"Entry to the museum is free.", t:1},
+ {w:"government",   g:"🏢", ar:"حكومة",               p:"noun",      ex:"The government funds the programme.", t:1},
+ {w:"immediately",  g:"⏱️", ar:"فورًا",              p:"adverb",    ex:"Report any damage immediately.", t:1},
+ {w:"definitely",   g:"✅", ar:"بالتأكيد",            p:"adverb",    ex:"I will definitely be there.", t:1},
+ {w:"separate",     g:"✂️", ar:"منفصل",              p:"adjective", ex:"Use a separate sheet for notes.", t:1},
+ {w:"recommend",    g:"👍", ar:"يوصي / ينصح بـ",      p:"verb",      ex:"I recommend the morning session.", t:1},
+ {w:"address",      g:"🏠", ar:"عنوان",               p:"noun",      ex:"Write your address in block capitals.", t:1},
+ {w:"business",     g:"💼", ar:"عمل / تجارة",         p:"noun",      ex:"She studies business management.", t:1},
+ {w:"calendar",     g:"🗓️", ar:"تقويم / نتيجة",      p:"noun",      ex:"The dates are on the calendar.", t:1},
+ {w:"colleague",    g:"👔", ar:"زميل عمل",            p:"noun",      ex:"Ask a colleague to check the form.", t:1},
+ {w:"committee",    g:"🗳️", ar:"لجنة",               p:"noun",      ex:"The committee meets every month.", t:1},
+ {w:"foreign",      g:"🌐", ar:"أجنبي",               p:"adjective", ex:"He speaks three foreign languages.", t:1},
+ {w:"maintenance",  g:"🔧", ar:"صيانة",               p:"noun",      ex:"Maintenance work starts on Monday.", t:1},
+ {w:"opportunity",  g:"🚪", ar:"فرصة",                p:"noun",      ex:"It is a great opportunity to travel.", t:1},
+ {w:"receive",      g:"📥", ar:"يستلم",               p:"verb",      ex:"You will receive an email tomorrow.", t:1},
+ {w:"schedule",     g:"📆", ar:"جدول زمني",           p:"noun",      ex:"Check the schedule before you come.", t:1},
+ {w:"successful",   g:"🏆", ar:"ناجح",                p:"adjective", ex:"The campaign was very successful.", t:1},
+ {w:"beginning",    g:"🚦", ar:"بداية",               p:"noun",      ex:"Pay the fee at the beginning of term.", t:1},
+ {w:"achieve",      g:"🎯", ar:"يحقق / ينجز",         p:"verb",      ex:"She wants to achieve band seven.", t:1},
+ {w:"brochure",     g:"📔", ar:"كتيب دعائي",          p:"noun",      ex:"The brochure lists all the prices.", t:1},
+ {w:"budget",       g:"💰", ar:"ميزانية",             p:"noun",      ex:"The budget covers travel and food.", t:1},
+ {w:"campus",       g:"🏫", ar:"حرم جامعي",           p:"noun",      ex:"The main campus is outside the city.", t:1},
+ {w:"certificate",  g:"📜", ar:"شهادة",               p:"noun",      ex:"You get a certificate at the end.", t:1},
+ {w:"conference",   g:"🎤", ar:"مؤتمر",               p:"noun",      ex:"The conference lasts three days.", t:1},
+ {w:"deposit",      g:"💵", ar:"عربون / وديعة",       p:"noun",      ex:"Pay a deposit of fifty pounds.", t:1},
+ {w:"efficient",    g:"⚙️", ar:"كفء / فعّال",        p:"adjective", ex:"The new system is more efficient.", t:1},
+ {w:"exhibition",   g:"🖼️", ar:"معرض",               p:"noun",      ex:"The exhibition opens next weekend.", t:1},
+ {w:"February",     g:"❄️", ar:"فبراير",             p:"noun",      ex:"The course begins in February.", t:1},
+ {w:"guarantee",    g:"🛡️", ar:"ضمان",               p:"noun",      ex:"The laptop has a two year guarantee.", t:1},
+ {w:"insurance",    g:"📑", ar:"تأمين",               p:"noun",      ex:"Travel insurance is strongly advised.", t:1},
+ {w:"itinerary",    g:"🗺️", ar:"خط سير الرحلة",      p:"noun",      ex:"The itinerary includes two museums.", t:1},
+ {w:"luggage",      g:"🧳", ar:"حقائب السفر",         p:"noun",      ex:"Leave your luggage at reception.", t:1},
+ {w:"membership",   g:"🎫", ar:"عضوية",               p:"noun",      ex:"Membership costs twenty pounds a year.", t:1},
+ {w:"passenger",    g:"🚌", ar:"راكب",                p:"noun",      ex:"Each passenger needs a valid ticket.", t:1},
+ {w:"pharmacy",     g:"💊", ar:"صيدلية",              p:"noun",      ex:"The pharmacy is opposite the bank.", t:1},
+ {w:"psychology",   g:"🧩", ar:"علم النفس",           p:"noun",      ex:"He is studying psychology at Leeds.", t:1},
+ {w:"receptionist", g:"🛎️", ar:"موظف استقبال",       p:"noun",      ex:"Give your name to the receptionist.", t:1},
+ {w:"souvenir",     g:"🎁", ar:"تذكار",               p:"noun",      ex:"The shop sells souvenirs and maps.", t:1},
+ {w:"stadium",      g:"🏟️", ar:"استاد",              p:"noun",      ex:"The stadium holds sixty thousand people.", t:1},
+ {w:"statistics",   g:"📈", ar:"إحصاءات",             p:"noun",      ex:"The statistics show a clear rise.", t:1},
+ {w:"supermarket",  g:"🛒", ar:"سوبر ماركت",          p:"noun",      ex:"There is a supermarket on campus.", t:1},
+ {w:"surgery",      g:"🏥", ar:"عيادة / جراحة",       p:"noun",      ex:"The doctor's surgery opens at eight.", t:1},
+ {w:"timetable",    g:"⏰", ar:"جدول مواعيد",         p:"noun",      ex:"The bus timetable changes in June.", t:1},
+ {w:"vegetarian",   g:"🥗", ar:"نباتي",               p:"adjective", ex:"A vegetarian option is available.", t:1},
+ {w:"warehouse",    g:"📦", ar:"مخزن",                p:"noun",      ex:"The goods are kept in a warehouse.", t:1},
+ {w:"Wednesday",    g:"📅", ar:"الأربعاء",            p:"noun",      ex:"The class is on Wednesday evening.", t:1},
+ {w:"aluminium",    g:"🥫", ar:"ألومنيوم",            p:"noun",      ex:"The frame is made of aluminium.", t:1},
+ {w:"physiotherapy",g:"🦵", ar:"علاج طبيعي",          p:"noun",      ex:"She needs physiotherapy twice a week.", t:1},
+ {w:"laundry",      g:"🧺", ar:"غسيل / مغسلة",        p:"noun",      ex:"The laundry room is in the basement.", t:1},
+ {w:"neighbourhood",g:"🏘️", ar:"حي / منطقة سكنية",   p:"noun",      ex:"It is a quiet neighbourhood.", t:1}
+];
+
+/* ------------------------------------------------------------------ */
+const $ = id => document.getElementById(id);
+const SKEY = 'ielts-spelling-stats';
+let stats = {};          // { word: {seen, wrong} }
+let queue = [], idx = 0, cur = null;
+let right = 0, asked = 0, streak = 0, best = 0;
+let firstTry = true, tries = 0, answered = false, missed = [], lastDeck = 'all';
+let voice = null, unlocked = false;
+
+/* ---------- storage ---------- */
+async function loadStats(){
+  stats = {};
+  try{
+    const local = localStorage.getItem(SKEY);
+    if(local) stats = JSON.parse(local);
+  }catch(e){}
+  if(!Object.keys(stats).length){
+    try{
+      const r = await window.storage.get(SKEY);
+      if(r) stats = JSON.parse(r.value);
+    }catch(e){}
+  }
+  renderCounts();
+}
+async function saveStats(){
+  const s = JSON.stringify(stats);
+  try{ localStorage.setItem(SKEY, s); }catch(e){}
+  try{ await window.storage.set(SKEY, s); }catch(e){}
+}
+function renderCounts(){
+  $('n-notebook').textContent = WORDS.filter(w=>!w.t).length;
+  $('n-traps').textContent    = WORDS.filter(w=> w.t).length;
+  $('n-all').textContent      = WORDS.length;
+  $('n-weak').textContent     = weakWords().length;
+}
+function weakWords(){ return WORDS.filter(w => (stats[w.w]?.wrong || 0) > 0); }
+
+/* ---------- speech ---------- */
+function pickVoice(){
+  const vs = speechSynthesis.getVoices();
+  if(!vs.length) return;
+  voice = vs.find(v=>/en[-_]GB/i.test(v.lang) && /female|Kate|Serena|Google UK English Female/i.test(v.name))
+       || vs.find(v=>/en[-_]GB/i.test(v.lang))
+       || vs.find(v=>/^en/i.test(v.lang)) || null;
+}
+if('speechSynthesis' in window){
+  pickVoice();
+  speechSynthesis.onvoiceschanged = pickVoice;
+}
+function say(text, rate){
+  if(!('speechSynthesis' in window) || !cur) return;
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = voice ? voice.lang : 'en-GB';
+  if(voice) u.voice = voice;
+  u.rate = rate; u.pitch = 1;
+  const eq = $('eq');
+  u.onstart = ()=> eq.classList.add('on');
+  u.onend = u.onerror = ()=> eq.classList.remove('on');
+  speechSynthesis.speak(u);
+  unlocked = true;
+}
+
+/* ---------- diff (levenshtein backtrace) ---------- */
+function align(a, b){
+  const n=a.length, m=b.length;
+  const d=Array.from({length:n+1},(_,i)=>Array.from({length:m+1},(_,j)=> i===0?j : j===0?i : 0));
+  for(let i=1;i<=n;i++) for(let j=1;j<=m;j++){
+    const c = a[i-1]===b[j-1] ? 0 : 1;
+    d[i][j] = Math.min(d[i-1][j]+1, d[i][j-1]+1, d[i-1][j-1]+c);
+  }
+  const out=[]; let i=n, j=m;
+  while(i>0 || j>0){
+    if(i>0 && j>0 && d[i][j] === d[i-1][j-1] + (a[i-1]===b[j-1]?0:1)){
+      out.unshift({u:a[i-1], c:b[j-1], ok:a[i-1]===b[j-1]}); i--; j--;
+    } else if(i>0 && d[i][j] === d[i-1][j]+1){
+      out.unshift({u:a[i-1], c:null, ok:false}); i--;
+    } else {
+      out.unshift({u:null, c:b[j-1], ok:false}); j--;
+    }
+  }
+  return {pairs:out, dist:d[n][m]};
+}
+
+/* ---------- flow ---------- */
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=(Math.random()*(i+1))|0;[a[i],a[j]]=[a[j],a[i]];} return a; }
+
+function startDeck(deck){
+  lastDeck = deck;
+  let pool = deck==='notebook' ? WORDS.filter(w=>!w.t)
+           : deck==='traps'    ? WORDS.filter(w=> w.t)
+           : deck==='weak'     ? weakWords()
+           : WORDS;
+  if(!pool.length) pool = WORDS.filter(w=>!w.t);
+  queue = shuffle(pool).slice(0, 15);
+  idx=0; right=0; asked=0; streak=0; best=0; missed=[];
+  show('s-drill');
+  next();
+}
+function show(id){
+  ['s-start','s-drill','s-done'].forEach(s=>$(s).classList.toggle('on', s===id));
+  window.scrollTo(0,0);
+}
+function next(){
+  if(idx >= queue.length){ return finish(); }
+  cur = queue[idx];
+  answered = false; firstTry = true; tries = 0;
+  $('glyph').textContent = cur.g;
+  $('glyph').classList.remove('pop'); void $('glyph').offsetWidth; $('glyph').classList.add('pop');
+  $('meaning').textContent = cur.ar;
+  $('pos').textContent = cur.p;
+  $('verdict').innerHTML = '';
+  $('answer').value = '';
+  $('answer').disabled = false;
+  $('btn-check').textContent = 'تصحيح';
+  $('btn-hint').style.visibility = 'visible';
+  $('bar').style.width = (idx / queue.length * 100) + '%';
+  updateChips();
+  if(unlocked) setTimeout(()=>say(cur.w, .85), 220);
+  $('answer').focus();
+}
+function updateChips(){
+  $('chip-streak').textContent = '🔥 ' + streak;
+  $('chip-score').textContent = right + ' / ' + asked;
+}
+function norm(s){ return s.trim().toLowerCase().replace(/\s+/g,' '); }
+
+function check(){
+  if(answered){ idx++; next(); return; }
+  const raw = $('answer').value;
+  if(!norm(raw)) { $('answer').focus(); return; }
+  const user = norm(raw), target = norm(cur.w);
+  const {pairs, dist} = align(user, target);
+  const ok = dist === 0;
+
+  stats[cur.w] = stats[cur.w] || {seen:0, wrong:0};
+  stats[cur.w].seen++;
+
+  if(ok){
+    if(firstTry){ right++; asked++; streak++; best=Math.max(best,streak); }
+    answered = true;
+    $('answer').disabled = true;
+    $('btn-check').textContent = 'الكلمة اللي بعدها ›';
+    $('btn-hint').style.visibility = 'hidden';
+    renderVerdict(true, pairs, dist);
+    saveStats();
+    setTimeout(()=>{ if(answered){ idx++; next(); } }, 1400);
+  } else {
+    tries++;
+    if(tries === 1){
+      asked++; streak = 0; stats[cur.w].wrong++;
+      if(!missed.includes(cur.w)) missed.push(cur.w);
+      // ترجع تاني في نفس الجولة بعد كام كلمة
+      if(queue.slice(idx+1).indexOf(cur) === -1) queue.splice(Math.min(idx+3, queue.length), 0, cur);
+      firstTry = false;
+      saveStats();
+    }
+    $('answer').classList.remove('shake'); void $('answer').offsetWidth; $('answer').classList.add('shake');
+    if(tries >= 2){                       // المحاولة التانية: نوريه الصح
+      answered = true;
+      $('answer').disabled = true;
+      $('btn-check').textContent = 'الكلمة اللي بعدها ›';
+      $('btn-hint').style.visibility = 'hidden';
+    } else {
+      $('answer').select();
+    }
+    renderVerdict(false, pairs, dist);
+    if(navigator.vibrate) navigator.vibrate(35);
+  }
+  updateChips();
+}
+
+function reveal(){
+  answered = true;
+  $('answer').disabled = true;
+  $('btn-check').textContent = 'الكلمة اللي بعدها ›';
+  $('btn-hint').style.visibility = 'hidden';
+  const {pairs, dist} = align(norm($('answer').value), norm(cur.w));
+  renderVerdict(false, pairs, dist, true);
+}
+
+function renderVerdict(ok, pairs, dist, revealed){
+  const v = $('verdict');
+  let title;
+  if(ok) title = firstTry ? '✅ مضبوط' : '✅ صح دلوقتي';
+  else if(revealed) title = '👀 الإجابة الصحيحة';
+  else if(answered) title = '❌ الصح كده — بص على الحروف الحمرا';
+  else if(dist === 1) title = '🔍 حرف واحد بس غلط — جرب تاني';
+  else title = '🔍 فيه ' + dist + ' فروق — جرب تاني';
+
+  let userRow = '', targRow = '';
+  pairs.forEach(p=>{
+    userRow += p.u === null
+      ? '<span class="cell gap">·</span>'
+      : '<span class="cell '+(p.ok?'match':'miss')+'">'+p.u+'</span>';
+    targRow += p.c === null
+      ? '<span class="cell gap">·</span>'
+      : '<span class="cell target '+(p.ok?'':'miss')+'">'+p.c+'</span>';
+  });
+
+  const showTarget = ok || revealed || answered;
+  v.innerHTML =
+    '<div class="verdict '+(ok?'ok':'bad')+'">' +
+      '<p class="vtitle">'+title+'</p>' +
+      '<div class="strip">' +
+        '<span class="lbl">أنت كتبت</span><div class="lrow">'+ (userRow || '<span class="cell gap">·</span>') +'</div>' +
+        (showTarget ? '<span class="lbl" style="margin-top:6px">الصح</span><div class="lrow">'+targRow+'</div>' : '') +
+      '</div>' +
+      (showTarget ? '<p class="example">'+ cur.ex.replace(new RegExp('('+cur.w+')','i'),'<b>$1</b>') +'</p>' : '') +
+    '</div>';
+  if(showTarget) setTimeout(()=>say(cur.w, .7), 300);
+}
+
+function hint(){
+  if(answered) return;
+  const t = cur.w;
+  const shown = Math.max(1, Math.ceil(t.length/3));
+  const v = $('verdict');
+  v.innerHTML = '<div class="verdict"><p class="vtitle">💡 تلميح</p>' +
+    '<div class="strip"><div class="lrow">' +
+      t.split('').map((ch,i)=> '<span class="cell '+(i<shown?'target':'gap')+'">'+(i<shown?ch:'·')+'</span>').join('') +
+    '</div></div>' +
+    '<p class="example">'+ t.length +' حروف</p></div>';
+}
+
+function finish(){
+  const pct = asked ? Math.round(right/asked*100) : 0;
+  $('final').textContent = pct + '%';
+  $('final-line').textContent = right + ' من ' + asked + ' كلمة صح من أول مرة · أطول سلسلة ' + best;
+  $('missed-wrap').style.display = missed.length ? 'block' : 'none';
+  $('missed').innerHTML = missed.map(w=>'<span>'+w+'</span>').join('');
+  $('bar').style.width = '100%';
+  show('s-done');
+}
+
+/* ---------- events ---------- */
+document.querySelectorAll('.deck').forEach(b=>{
+  b.addEventListener('click', ()=>{ unlocked = true; startDeck(b.dataset.deck); });
+});
+$('btn-play').addEventListener('click', ()=> say(cur.w, .85));
+$('btn-slow').addEventListener('click', ()=> say(cur.w, .55));
+$('btn-check').addEventListener('click', check);
+$('btn-hint').addEventListener('click', hint);
+$('btn-skip').addEventListener('click', ()=>{
+  if(answered){ idx++; next(); return; }
+  if(firstTry){
+    asked++; streak = 0;
+    stats[cur.w] = stats[cur.w] || {seen:0, wrong:0};
+    stats[cur.w].wrong++;
+    if(!missed.includes(cur.w)) missed.push(cur.w);
+    saveStats();
+  }
+  reveal();
+});
+$('btn-back').addEventListener('click', ()=>{ speechSynthesis.cancel(); renderCounts(); show('s-start'); });
+$('btn-again').addEventListener('click', ()=> startDeck(lastDeck));
+$('btn-home').addEventListener('click', ()=>{ renderCounts(); show('s-start'); });
+$('answer').addEventListener('keydown', e=>{ if(e.key === 'Enter'){ e.preventDefault(); check(); } });
+
+/* ---------- PWA: install as a home-screen app ---------- */
+const ICON512 = "data:image/png;base64,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P1OeF3kGABAlAABRAgAQJQAAUQIAECUAAFECABAlAABRAgAQJQAAUQLAbua/b8AbDmALAQCIEgCAKAFgTzPvybj/AxsJAECUALCzOQdzx3/YTgDY3+jpbPrDLgQAIEoAGGLcId3xH/YiAIwyYlKb/rAjAWCgfee16Q/7ur32BXByj1P7/svb7T8E2JcNgBm2THDTHwaxATDJK1YBox+GEgCmeprpF0pg7sMcAsB1mPJwdZ4BAEQJAECUAABECQBAlAAARAkAQJQAAEQJAECUAABECQBAlAAARAkAQJQAAEQJAECUAABECQBAlAAARAkAQJQAAEQJAECUAABECQBAlAAARAkAQJQAAEQJAECUAABECQBAlAAARAkAQJQAAEQJAECUAABECQBAlAAARAkAdXef/j39b4QXCQBAlAAARAkATL0n4/4P6xAAgCgBgJubWQdzx3+WIgDwzejpbPqzGgEAiBIA+G7cId3xnwUJAPxkxKQ2/VmTAMBz+85r059lvfnw7uu1rwEWdf/545aPG/0szgYAv7Vlgpv+rM8GAP/vr1YBo5+jEAD4CxdKYO5zOAIAEOUZAECUAABECQBAlAAARAkAQJQAAEQJAECUAABECQBAlAAARAkAQJQAAEQJAECUAABECQBAlAAARAkAQJQAAEQJAECUAABECQBAlAAARAkAQJQAAEQJAECUAABECQBAlAAARAkAQJQAAEQJAECUAABECQBAlAAARAkAQJQAAEQJAECUAABECQBAlAAARAkAQJQAAEQJAECUAABECQBAlAAARAkAQJQAAEQJAECUAABECQBAlAAARAkAQJQAAEQJAECUAABECQBAlAAARAkAQJQAAEQJAECUAABECQBAlAAARAkAQJQAAEQJAECUAABECQBAlAAARAkAQJQAAEQJAECUAABECQBAlAAARAkAQJQAAEQJAECUAABECQBAlAAARAkAQJQAAEQJAECUAABECQBAlAAARAkAQJQAAEQJAECUAABECQBAlAAARAkAQJQAAET9B68hQXGNtbxKAAAAAElFTkSuQmCC";
+try{
+  const mf = {
+    name: "Spelling Drill — IELTS",
+    short_name: "Spelling",
+    start_url: location.href.split('#')[0],
+    scope: "./",
+    display: "standalone",
+    orientation: "portrait",
+    background_color: "#E7EAF1",
+    theme_color: "#3B2FE0",
+    lang: "ar",
+    dir: "rtl",
+    icons: [
+      { src: ICON512, sizes: "512x512", type: "image/png", purpose: "any" },
+      { src: ICON512, sizes: "512x512", type: "image/png", purpose: "maskable" }
+    ]
+  };
+  const url = URL.createObjectURL(new Blob([JSON.stringify(mf)], {type:'application/manifest+json'}));
+  document.getElementById('mf').href = url;
+}catch(e){}
+
+if('serviceWorker' in navigator && location.protocol === 'https:'){
+  navigator.serviceWorker.register('./sw.js').catch(()=>{});
+}
+
+loadStats();
+</script>
+</body>
+</html>
